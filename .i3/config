@@ -1,16 +1,16 @@
 # variables
-# > Note: too use icons you first need to install font-awesome
 set $workspace1 "1:"
 set $workspace2 "2:"
 
 # Disable window title
 new_window pixel 1 
+hide_edge_borders both
 
 set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:monospace 9 
+font pango:Roboto-Bold 10 
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -141,26 +141,33 @@ bar {
 	position top
   mode hide
   hidden_state hide
-	status_command i3status
+
+	status_command i3status -c ~/.config/i3/i3status.conf
   tray_output primary
+
 	colors {
- 		background #111
+ 		background #1f1f1f
     statusline #ffffff
     separator #666666
 	}
 }
+
+# Process manager
+bindsym Ctrl+Shift+Escape exec ksysguard
+assign [class="ksysguard"] 3
 
 # Pulse Audio controls
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 
-# # Sreen brightness controls
-bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
-bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
+# Sreen brightness controls
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10 
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10 
 
 # Touchpad controls
-bindsym XF86TouchpadToggle exec /some/path/toggletouchpad.sh # toggle touchpad
+bindsym XF86TouchpadToggle exec /home/saka/.config/i3/touchpad_toggle.sh
+exec /home/saka/.config/i3/touchpad_toggle.sh
 
 # Move Chromium to workspace1
 exec chromium-browser
