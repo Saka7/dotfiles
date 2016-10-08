@@ -1,0 +1,26 @@
+{
+	"caret_extra_bottom": 3,
+	"caret_extra_top": 3,
+	"caret_extra_width": 2,
+	"color_scheme": "Packages/User/SublimeLinter/OneDark (SL).tmTheme",
+	"draw_white_space": "all",
+	"folder_exclude_patterns":
+	[
+		"bower_components",
+		"node_modules",
+		"libs",
+		"build",
+		".gradle",
+		".git"
+	],
+	"font_size": 11,
+	"highlight_line": true,
+	"ignored_packages":
+	[
+	],
+	"overlay_scroll_bars": "enabled",
+	"tab_size": 2,
+	"theme": "Seti.sublime-theme",
+	"translate_tabs_to_spaces": true
+}
+
