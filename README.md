@@ -19,7 +19,7 @@ Place file in ~/.i3/config or ~/.config/.i3/config
 # ipython
 [ipython](https://ipython.org/)
 
-Place file in home folder
+Place file in ~/.ipython/profile_[username]/ folder
 Loads numpy, scipy, matplotlib and pandas on startup
 
 # sublime
