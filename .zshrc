@@ -1,21 +1,24 @@
-export ZSH=/home/saka/.oh-my-zsh
+export ZSH=/home/saka7/.oh-my-zsh
 
 ZSH_THEME="laconic"
 
-# CASE_SENSITIVE="true"
-# HYPHEN_INSENSITIVE="true"
-# DISABLE_AUTO_UPDATE="true"
-# export UPDATE_ZSH_DAYS=13
-# DISABLE_LS_COLORS="true"
-# DISABLE_AUTO_TITLE="true"
-# ENABLE_CORRECTION="true"
-# COMPLETION_WAITING_DOTS="true"
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
+plugins=(
+  curl
+  ssh
+  z
+  zsh-syntax-highlighting
+  git
+  postgres
+  npm
+  docker
+  kubectl
+  vim-interaction
+  kubectl
+  httpie
+  jhipster
+)
 
-plugins=(z git postgres npm bower gradle vagrant docker vim-interaction zsh-syntax-highlighting)
-
+# User configuration
 source $ZSH/oh-my-zsh.sh
 
 # Aliases
@@ -23,28 +26,26 @@ source $ZSH/oh-my-zsh.sh
 alias wsp="cd /mnt/data/wsp/"
 alias jwsp="cd /mnt/data/wsp/java"
 alias jswsp="cd /mnt/data/wsp/js"
-alias gwsp="cd /mnt/data/wsp/groovy"
-alias cwsp="cd /mnt/data/wsp/c"
 alias pwsp="cd /mnt/data/wsp/python"
-alias cdwsp="cd /mnt/data/wsp/#codewars"
 alias bwsp="cd /mnt/data/wsp/bash"
 alias lwsp="cd /mnt/data/wsp/latex"
 alias twsp="cd /mnt/data/wsp/trash"
 alias dwn="cd /mnt/data/dwn"
-#Virtualization
+# Virtualization
 alias vb="virtualbox"
 alias vbs="vboxmanage startvm $1"
 # Tools
 alias ipy="/usr/local/bin/ipython --profile=saka"
 alias py="/usr/bin/python"
-alias js="/usr/bin/nodejs"
-#Other
+# Other
 alias chrom="/usr/bin/chromium-browser"
-alias ccat="ccat --bg='dark' $@"
 alias open="dolphin $1"
 alias suspend="sudo pm-suspend"
 
+export CHROME_BIN=/usr/bin/chromium-browser 
 export EDITOR=vim
+export PATH="/home/saka/.npm-global/bin:$PATH"
 source /home/saka/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
