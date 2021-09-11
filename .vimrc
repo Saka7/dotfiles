@@ -23,9 +23,15 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'mbbill/undotree'
+Plug 'tpope/vim-dadbod'
+Plug 'kristijanhusak/vim-dadbod-ui'
 call plug#end()
 
 colorscheme darcula
+
+map <C-y> :w !xclip -sel c <CR><CR>
+imap jj <Esc>
+set timeoutlen=300
 
 let g:airline_theme='raven'
 let g:gitgutter_async=0
