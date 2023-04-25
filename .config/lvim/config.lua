@@ -10,12 +10,12 @@ lvim.leader = "space"
 lvim.log.level = "warn"
 lvim.format_on_save.enabled = false
 lvim.colorscheme = "gruvbox-material"
+-- lvim.colorscheme = "darcula"
 
 lvim.keys.normal_mode["<C-s>"] = ":w<CR>"
 lvim.keys.normal_mode["<C-S-c>"] = ":!xclip -sel c<CR>"
-lvim.keys.normal_mode["<Tab>"] = ":bprev<CR>"
-lvim.keys.normal_mode["<S-Tab>"] = ":bnext<CR>"
-
+lvim.keys.normal_mode["<Tab>"] = ":bnext<CR>"
+lvim.keys.normal_mode["<S-Tab>"] = ":bprev<CR>"
 
 lvim.builtin.alpha.active = true
 lvim.builtin.alpha.mode = "dashboard"
@@ -64,6 +64,7 @@ lvim.builtin.telescope.defaults.layout_config = {
 lvim.builtin.which_key.vmappings = {
   ["/"] = { "<Plug>(comment_toggle_linewise_visual)", "Comment toggle" },
   ["r"] = { ":'<,'>SnipRun<cr>", "Run snippet" },
+  ["f"] = { require("lvim.lsp.utils").format, "Format" },
 }
 
 lvim.builtin.which_key.mappings = {
@@ -71,10 +72,12 @@ lvim.builtin.which_key.mappings = {
   ["w"] = { "<cmd>w!<CR>", "Save" },
   ["q"] = { "<cmd>lua require('lvim.utils.functions').smart_quit()<CR>", "Quit" },
   ["/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment toggle" },
+  ["\\"] = { "<cmd>ToggleTerm<cr>", "Toggle terminal" },
   ["c"] = { "<cmd>BufferKill<CR>", "Close Buffer" },
   ["f"] = { require("lvim.core.telescope.custom-finders").find_project_files, "Find File" },
   ["h"] = { "<cmd>nohlsearch<CR>", "No Highlight" },
   ["o"] = { "<cmd>SymbolsOutline<CR>", "Outline" },
+  ["u"] = { "<cmd>UndotreeToggle<CR>", "UndoTree" },
   F = {
     name = "Folds",
     o = { "<cmd>lua require('ufo').openAllFolds()<cr>", "Open All" },
@@ -127,6 +130,7 @@ lvim.builtin.which_key.mappings = {
     j = { "<cmd>lua require 'gitsigns'.next_hunk({navigation_message = false})<cr>", "Next Hunk" },
     k = { "<cmd>lua require 'gitsigns'.prev_hunk({navigation_message = false})<cr>", "Prev Hunk" },
     l = { "<cmd>lua require 'gitsigns'.blame_line()<cr>", "Blame" },
+    L = { "<cmd>G blame<cr>", "Toggle Blame" },
     p = { "<cmd>lua require 'gitsigns'.preview_hunk()<cr>", "Preview Hunk" },
     r = { "<cmd>lua require 'gitsigns'.reset_hunk()<cr>", "Reset Hunk" },
     R = { "<cmd>lua require 'gitsigns'.reset_buffer()<cr>", "Reset Buffer" },
@@ -197,14 +201,27 @@ lvim.builtin.which_key.mappings = {
 }
 
 lvim.plugins = {
+  -- { "doums/darcula" },
   { 'sainnhe/gruvbox-material' },
   { 'jremmen/vim-ripgrep' },
   { 'vim-test/vim-test' },
   { "nvim-telescope/telescope-live-grep-args.nvim" },
+  { "tpope/vim-fugitive" },
+  { "mbbill/undotree" },
   {
     'petertriho/nvim-scrollbar',
     config = function()
-      require("scrollbar").setup()
+      local colors = require("tokyonight.colors").setup()
+      require("scrollbar").setup({
+        marks = {
+          Search = { color = colors.orange },
+          Error = { color = colors.error },
+          Warn = { color = colors.warning },
+          Info = { color = colors.info },
+          Hint = { color = colors.hint },
+          Misc = { color = colors.purple },
+        }
+      })
       require("scrollbar.handlers.gitsigns").setup()
     end,
   },
@@ -266,93 +283,51 @@ lvim.plugins = {
         end
       })
     end
-  }
-
--- TODO: Configure DAP
-
-  -- {
-  --   "mxsdev/nvim-dap-vscode-js", requires = {"mfussenegger/nvim-dap"},
-  -- },
-  -- {
-  --   "microsoft/vscode-js-debug",
-  --   opt = true,
-  --   run = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out",
-  -- }
+  },
 }
 
--- require("dap-vscode-js").setup({ adapters = { 'pwa-node', 'pwa-chrome', } })
-
--- for _, language in ipairs({ "typescript", "javascript" }) do
---   require("dap").configurations[language] = {
---     {
---       {
---         type = "pwa-node",
---         request = "launch",
---         name = "Launch file",
---         program = "${file}",
---         cwd = "${workspaceFolder}",
---       },
---       {
---         type = "pwa-node",
---         request = "attach",
---         name = "Attach",
---         processId = require'dap.utils'.pick_process,
---         cwd = "${workspaceFolder}",
---       }
---     }
---   }
--- end
-
+-- TODO: Configure DAP
 -- lvim.builtin.dap.active = true
--- local dap = require("dap")
+
 -- local home = os.getenv("HOME")
 
--- dap.adapters.node2 = {
+-- dap.adapters.node = {
 --     type = "executable",
 --     command = "node",
---     args = { home .. ".npm/vscode-js-debug/out/src/vsDebugServer.js" },
 -- }
+--     args = { home .. ".npm/vscode-js-debug/dist/src/bootloader.js" },
 
 -- dap.configurations.javascript = {
---     {
---         type = 'node2',
---         request = 'launch',
---         name = 'Node.js Launch',
---         program = '${workspaceFolder}/${file}',
---         cwd = vim.fn.getcwd(),
---         sourceMaps = true,
---         protocol = 'inspector',
---         console = 'integratedTerminal',
---         args = { '--nolazy', '-r', 'ts-node/register' },
---         skipFiles = { '<node_internals>/**/*.js', 'node_modules/**/*.js' },
---         smartStep = true,
---     },
---     {
---         type = 'chrome',
---         request = 'launch',
---         name = 'Chrome Launch',
---         url = 'http://localhost:3000',
---         webRoot = '${workspaceFolder}',
---         sourceMaps = true,
---         skipFiles = { '<node_internals>/**/*.js', 'node_modules/**/*.js' },
---     },
+--   {
+--       type = 'node',
+--       request = 'launch',
+--       name = 'Node JS Launch',
+--       program = '${workspaceFolder}/${file}',
+--       cwd = vim.fn.getcwd(),
+--       sourceMaps = true,
+--       protocol = 'inspector',
+--       console = 'integratedTerminal',
+--       skipFiles = { '<node_internals>/**/*.js', 'node_modules/**/*.js' },
+--       smartStep = true,
+--   },
 -- }
+
 -- dap.configurations.typescript = {
---     {
---         name = 'Node.js Launch',
---         type = 'node2',
---         request = 'launch',
---         program = '${workspaceFolder}/${file}',
---         cwd = vim.fn.getcwd(),
---         sourceMaps = true,
---         protocol = 'inspector',
---         console = 'integratedTerminal',
---         runtimeArgs = {
---             '-r', 'ts-node/register',
---             '--nolazy',
---         },
---         smartStep = true,
---         skipFiles = { '<node_internals>/**' },
---     }
+--   {
+--       name = 'Node TS Launch',
+--       type = 'node',
+--       request = 'launch',
+--       program = '${workspaceFolder}/${file}',
+--       cwd = vim.fn.getcwd(),
+--       sourceMaps = true,
+--       protocol = 'inspector',
+--       console = 'integratedTerminal',
+--       runtimeArgs = {
+--           '-r', 'ts-node/register',
+--           '--nolazy',
+--       },
+--       smartStep = true,
+--       skipFiles = { '<node_internals>/**' },
+--   }
 -- }
 
