@@ -9,8 +9,9 @@ vim.opt.colorcolumn = '120'
 lvim.leader = "space"
 lvim.log.level = "warn"
 lvim.format_on_save.enabled = false
-lvim.colorscheme = "gruvbox-material"
--- lvim.colorscheme = "darcula"
+-- lvim.colorscheme = "vscode"
+-- lvim.colorscheme = "gruvbox-material"
+lvim.colorscheme = "darcula"
 
 lvim.keys.normal_mode["<C-s>"] = ":w<CR>"
 lvim.keys.normal_mode["<C-S-c>"] = ":!xclip -sel c<CR>"
@@ -201,7 +202,8 @@ lvim.builtin.which_key.mappings = {
 }
 
 lvim.plugins = {
-  -- { "doums/darcula" },
+  { "doums/darcula" },
+  { 'Mofiqul/vscode.nvim' },
   { 'sainnhe/gruvbox-material' },
   { 'jremmen/vim-ripgrep' },
   { 'vim-test/vim-test' },
@@ -284,50 +286,82 @@ lvim.plugins = {
       })
     end
   },
+  {
+    "microsoft/vscode-js-debug",
+    version = "1.x",
+    build = "npm i && npm run compile vsDebugServerBundle && mv dist out"
+  },
+  { "mxsdev/nvim-dap-vscode-js" }
 }
 
--- TODO: Configure DAP
--- lvim.builtin.dap.active = true
+lvim.builtin.dap.active = true
 
--- local home = os.getenv("HOME")
+local home_dir = os.getenv("HOME")
+local dap = require("dap")
 
--- dap.adapters.node = {
---     type = "executable",
---     command = "node",
--- }
---     args = { home .. ".npm/vscode-js-debug/dist/src/bootloader.js" },
+require("dap-vscode-js").setup({
+  debugger_path = home_dir .. "/.local/share/lunarvim/site/pack/packer/start/vscode-js-debug",
+  adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' },
+})
 
--- dap.configurations.javascript = {
---   {
---       type = 'node',
---       request = 'launch',
---       name = 'Node JS Launch',
---       program = '${workspaceFolder}/${file}',
---       cwd = vim.fn.getcwd(),
---       sourceMaps = true,
---       protocol = 'inspector',
---       console = 'integratedTerminal',
---       skipFiles = { '<node_internals>/**/*.js', 'node_modules/**/*.js' },
---       smartStep = true,
---   },
--- }
 
--- dap.configurations.typescript = {
---   {
---       name = 'Node TS Launch',
---       type = 'node',
---       request = 'launch',
---       program = '${workspaceFolder}/${file}',
---       cwd = vim.fn.getcwd(),
---       sourceMaps = true,
---       protocol = 'inspector',
---       console = 'integratedTerminal',
---       runtimeArgs = {
---           '-r', 'ts-node/register',
---           '--nolazy',
---       },
---       smartStep = true,
---       skipFiles = { '<node_internals>/**' },
---   }
--- }
+dap.configurations.javascript = {
+  {
+    type = "pwa-node",
+    request = "launch",
+    name = "Launch file",
+    program = "${file}",
+    cwd = "${workspaceFolder}",
+    sourceMaps = true,
+    protocol = 'inspector',
+    console = 'integratedTerminal',
+    skipFiles = { '<node_internals>/**/*.js', 'node_modules/**/*.js' },
+    smartStep = true,
+  },
+  {
+    type = "pwa-node",
+    request = "attach",
+    name = "Attach",
+    processId = require'dap.utils'.pick_process,
+    cwd = "${workspaceFolder}",
+    sourceMaps = true,
+    protocol = 'inspector',
+    console = 'integratedTerminal',
+    skipFiles = { '<node_internals>/**/*.js', 'node_modules/**/*.js' },
+    smartStep = true,
+  }
+}
+
+dap.configurations.typescript = {
+  {
+    type = "pwa-node",
+    request = "launch",
+    name = "Launch file",
+    program = "${file}",
+    cwd = "${workspaceFolder}",
+    protocol = 'inspector',
+    console = 'integratedTerminal',
+    skipFiles = { '<node_internals>/**/*.js', 'node_modules/**/*.js' },
+    smartStep = true,
+    runtimeArgs = {
+        '-r', 'ts-node/register',
+        '--nolazy',
+    },
+  },
+  {
+    type = "pwa-node",
+    request = "attach",
+    name = "Attach",
+    processId = require'dap.utils'.pick_process,
+    cwd = "${workspaceFolder}",
+    protocol = 'inspector',
+    console = 'integratedTerminal',
+    skipFiles = { '<node_internals>/**/*.js', 'node_modules/**/*.js' },
+    smartStep = true,
+    runtimeArgs = {
+        '-r', 'ts-node/register',
+        '--nolazy',
+    },
+  }
+}
 
