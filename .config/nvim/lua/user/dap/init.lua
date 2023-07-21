@@ -1,8 +1,8 @@
 local home_dir = os.getenv("HOME")
 
+vim.fn.sign_define('DapBreakpoint', {text='⬤', texthl='DiagnosticSignError', linehl='', numhl=''})
+
 local dap_config = {
-  active = true,
-  on_config_done = nil,
   breakpoint = {
     text = '',
     texthl = "DiagnosticSignError",
@@ -98,10 +98,6 @@ if not status_ok then
 end
 
 dap.set_log_level(dap_config.log.level)
-
-if dap_config.on_config_done then
-  dap_config.on_config_done(dap)
-end
 
 local status_ok, dap = pcall(require, "dap")
 if not status_ok then

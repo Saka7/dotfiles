@@ -43,7 +43,7 @@ local plugins = {
   { "tpope/vim-fugitive" },
   { "simrat39/symbols-outline.nvim" },
   { "nvim-pack/nvim-spectre" },
-  { "m4xshen/smartcolumn.nvim", lazy = true },
+  { "m4xshen/smartcolumn.nvim" },
 
   { "nvim-treesitter/nvim-treesitter" },
   { "neovim/nvim-lspconfig" },
