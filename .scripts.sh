@@ -1,5 +1,3 @@
-#!/usr/bin/zsh
-
 # Jira
 function jral {
     jira issue list -q "sprint in openSprints() AND assignee was currentUser()"
@@ -20,5 +18,15 @@ function screcord {
         -f pulse -ac 2 -ar 48000 -i alsa_output.pci-0000_00_1b.0.analog-stereo.monitor \
         -f pulse -ac 1 -ar 44100 -i alsa_input.usb-AKM_AK5370-00-AK5370.analog-mono \
         $HOME/Videos/Screencast-$(date --iso-8601=seconds).mp4
+}
+
+function ssh_agent_start {
+    ssh-agent -k > /dev/null
+
+    keychain --quiet ~/.ssh/bitbucket_id_rsa
+    keychain --quiet ~/.ssh/google_compute_engine
+    keychain --quiet ~/.ssh/github_id_rsa
+
+    source ~/.keychain/`uname -n`-sh
 }
 
