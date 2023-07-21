@@ -1,8 +1,6 @@
 syntax on
 filetype plugin indent on
 
-set cpo-=<
-set nocompatible
 set number
 set paste
 set tabstop=4 softtabstop=4
