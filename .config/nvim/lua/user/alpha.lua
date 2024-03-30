@@ -10,7 +10,6 @@ dashboard.section.buttons.val = {
 	dashboard.button("t", "  Find text", ":Telescope live_grep <CR>"),
 }
 
-
 dashboard.section.footer.opts.hl = "Type"
 dashboard.section.header.opts.hl = "Include"
 dashboard.section.buttons.opts.hl = "Keyword"

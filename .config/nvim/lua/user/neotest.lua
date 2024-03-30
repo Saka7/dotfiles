@@ -1,4 +1,5 @@
 require('neotest').setup({
+  output = { open_on_run = true },
   adapters = {
     require('neotest-jest')({
       jestCommand = "npm test --",

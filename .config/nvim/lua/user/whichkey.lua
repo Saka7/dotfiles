@@ -1,24 +1,21 @@
-local status_ok, which_key = pcall(require, "which-key")
-if not status_ok then
-  return
-end
+local which_key = require("which-key")
 
 local setup = {
   plugins = {
-    marks = true, -- shows a list of your marks on ' and `
-    registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
+    marks = true,       -- shows a list of your marks on ' and `
+    registers = true,   -- shows your registers on " in NORMAL or <C-r> in INSERT mode
     spelling = {
-      enabled = true, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
+      enabled = true,   -- enabling this will show WhichKey when pressing z= to select spelling suggestions
       suggestions = 20, -- how many suggestions should be shown in the list?
     },
     presets = {
-      operators = false, -- adds help for operators like d, y, ... and registers them for motion / text object completion
-      motions = true, -- adds help for motions
-      text_objects = true, -- help for text objects triggered after entering an operator
-      windows = true, -- default bindings on <c-w>
-      nav = true, -- misc bindings to work with windows
-      z = true, -- bindings for folds, spelling and others prefixed with z
-      g = true, -- bindings for prefixed with g
+      operators = false,      -- adds help for operators like d, y, ... and registers them for motion / text object completion
+      motions = true,         -- adds help for motions
+      text_objects = true,    -- help for text objects triggered after entering an operator
+      windows = true,         -- default bindings on <c-w>
+      nav = true,             -- misc bindings to work with windows
+      z = true,               -- bindings for folds, spelling and others prefixed with z
+      g = true,               -- bindings for prefixed with g
     },
   },
   key_labels = {
@@ -30,25 +27,25 @@ local setup = {
   },
   popup_mappings = {
     scroll_down = "<c-d>", -- binding to scroll down inside the popup
-    scroll_up = "<c-u>", -- binding to scroll up inside the popup
+    scroll_up = "<c-u>",   -- binding to scroll up inside the popup
   },
   window = {
-    border = "rounded", -- none, single, double, shadow
-    position = "bottom", -- bottom, top
-    margin = { 1, 0, 1, 0 }, -- extra window margin [top, right, bottom, left]
+    border = "rounded",       -- none, single, double, shadow
+    position = "bottom",      -- bottom, top
+    margin = { 1, 0, 1, 0 },  -- extra window margin [top, right, bottom, left]
     padding = { 2, 2, 2, 2 }, -- extra window padding [top, right, bottom, left]
     winblend = 0,
   },
   layout = {
-    height = { min = 4, max = 25 }, -- min and max height of the columns
-    width = { min = 20, max = 50 }, -- min and max width of the columns
-    spacing = 3, -- spacing between columns
-    align = "left", -- align columns left, center or right
+    height = { min = 4, max = 25 },                                             -- min and max height of the columns
+    width = { min = 20, max = 50 },                                             -- min and max width of the columns
+    spacing = 3,                                                                -- spacing between columns
+    align = "left",                                                             -- align columns left, center or right
   },
-  ignore_missing = true, -- enable this to hide mappings for which you didn't specify a label
+  ignore_missing = true,                                                        -- enable this to hide mappings for which you didn't specify a label
   hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ " }, -- hide mapping boilerplate
-  show_help = true, -- show help message on the command line when the popup is visible
-  triggers = "auto", -- automatically setup triggers
+  show_help = true,                                                             -- show help message on the command line when the popup is visible
+  triggers = "auto",                                                            -- automatically setup triggers
   triggers_blacklist = {
     i = { "j", "k" },
     v = { "j", "k" },
@@ -56,22 +53,21 @@ local setup = {
 }
 
 local opts = {
-  mode = "n", -- NORMAL mode
+  mode = "n",     -- NORMAL mode
   prefix = "<leader>",
-  buffer = nil, -- Global mappings. Specify a buffer number for buffer local mappings
-  silent = true, -- use `silent` when creating keymaps
+  buffer = nil,   -- Global mappings. Specify a buffer number for buffer local mappings
+  silent = true,  -- use `silent` when creating keymaps
   noremap = true, -- use `noremap` when creating keymaps
-  nowait = true, -- use `nowait` when creating keymaps
+  nowait = true,  -- use `nowait` when creating keymaps
 }
 
 local mappings = {
-  ["/"] = { "<Plug>(comment_toggle_linewise_visual)", "Comment toggle" },
-  [";"] = { "<cmd>Alpha<CR>", "Dashboard" },
-  ["q"] = { "<cmd>lua require('lvim.utils.functions').smart_quit()<CR>", "Quit" },
+  ["/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment toggle" },
+  [";"] = { "<cmd>Alpha<cr>", "Dashboard" },
   ["\\"] = { "<cmd>ToggleTerm<cr>", "Toggle terminal" },
-  ["c"] = { "<cmd>BufferKill<CR>", "Close Buffer" },
-  ["o"] = { "<cmd>SymbolsOutline<CR>", "Outline" },
-  ["u"] = { "<cmd>UndotreeToggle<CR>", "UndoTree" },
+  ["c"] = { "<cmd>bdelete<cr>", "Close Buffer" },
+  ["o"] = { "<cmd>SymbolsOutline<cr>", "Outline" },
+  ["u"] = { "<cmd>UndotreeToggle<cr>", "UndoTree" },
   ["b"] = {
     "<cmd>lua require('telescope.builtin').buffers(require('telescope.themes').get_dropdown{previewer = false})<cr>",
     "Buffers",
@@ -131,7 +127,6 @@ local mappings = {
   },
   g = {
     name = "Git",
-    g = { "<cmd>lua require 'lvim.core.terminal'.lazygit_toggle()<cr>", "Lazygit" },
     j = { "<cmd>lua require 'gitsigns'.next_hunk({navigation_message = false})<cr>", "Next Hunk" },
     k = { "<cmd>lua require 'gitsigns'.prev_hunk({navigation_message = false})<cr>", "Prev Hunk" },
     l = { "<cmd>lua require 'gitsigns'.blame_line()<cr>", "Blame" },
@@ -171,6 +166,7 @@ local mappings = {
       "Prev Diagnostic",
     },
     l = { vim.lsp.codelens.run, "CodeLens Action" },
+    f = { "<cmd>lua vim.lsp.buf.format({ timeout_ms = 2000 })<cr>", "Format" },
     q = { vim.diagnostic.setloclist, "Quickfix" },
     r = { vim.lsp.buf.rename, "Rename" },
     s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
@@ -179,6 +175,7 @@ local mappings = {
       "Workspace Symbols",
     },
     e = { "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
+    t = { "<cmd>lua require('treesj').toggle()<cr>", "Split/Join" }
   },
   s = {
     name = "Search",
@@ -192,16 +189,19 @@ local mappings = {
   },
   t = {
     name = "Tests",
-    f = { '<cmd> lua require("neotest").run.run(vim.fn.expand("%"))<cr>', "run file" },
-    n = { '<cmd> lua require("neotest").run.run()<cr>', "run nearest" },
-    d = { '<cmd> lua require("neotest").run.run({strategy = "dap"})<cr>', "debug nearest" },
-    s = { '<cmd> lua require("neotest").run.stop()<cr>', "stop nearest" },
-    a = { '<cmd> lua require("neotest").run.attach()<cr>', "attach to nearest" },
+    t = { '<cmd>Neotest summary<cr>', "toggle summary" },
+    f = { '<cmd>Neotest run file<cr>', "run file" },
+    n = { '<cmd>Neotest run<cr>', "run nearest" },
+    l = { '<cmd>Neotest run last<cr>', "run last" },
+    L = { '<cmd>Neotest run last strategy="dap"<cr>', "debug last" },
+    d = { '<cmd>Neotest run strategy="dap"<cr>', "debug nearest" },
+    s = { '<cmd>Neotest stop<cr>', "stop nearest" },
+    a = { '<cmd>Neotest attach<cr>', "attach to nearest" },
   },
   r = {
     name = "Spectre",
-    c = { "<cmd>lua require(\"spectre\").open_visual({select_word=true})<CR>", 'Search current word'},
-    f = { "<cmd>lua require(\"spectre\").open_visual({select_word=true})<CR>", 'Search current file'},
+    c = { "<cmd>lua require(\"spectre\").open_visual({select_word=true})<CR>", 'Search current word' },
+    f = { "<cmd>lua require(\"spectre\").open_visual({select_word=true})<CR>", 'Search current file' },
     r = { ":Spectre<cr>", "Open Spectre" },
   },
 }
@@ -209,18 +209,18 @@ local mappings = {
 local vopts = {
   mode = "v",
   prefix = "<leader>",
-  buffer = nil, -- Global mappings. Specify a buffer number for buffer local mappings
-  silent = true, -- use `silent` when creating keymaps
+  buffer = nil,   -- Global mappings. Specify a buffer number for buffer local mappings
+  silent = true,  -- use `silent` when creating keymaps
   noremap = true, -- use `noremap` when creating keymaps
-  nowait = true, -- use `nowait` when creating keymaps
+  nowait = true,  -- use `nowait` when creating keymaps
 }
 
 local vmappings = {
-  ["/"] = { "<Plug>(comment_toggle_linewise_visual)", "Comment toggle" },
+  ["/"] = { "<Plug>(comment_toggle_linewise_visual)", "Comment" },
+  ["f"] = { "<cmd>lua vim.lsp.buf.format({ timeout_ms = 2000 })<cr>", "Format" },
 }
 
 which_key.setup(setup)
 
 which_key.register(mappings, opts)
 which_key.register(vmappings, vopts)
-

@@ -1,17 +1,28 @@
-local status_ok, telescope = pcall(require, "telescope")
-if not status_ok then
-  return
-end
-
+local telescope = require("telescope")
 local actions = require "telescope.actions"
 
 telescope.setup {
   defaults = {
-
     prompt_prefix = " ",
     selection_caret = " ",
-    path_display = { "smart" },
-
+    -- path_display = { "smart" },
+    layout_strategy = 'vertical',
+    layout_config = {
+      width = 0.95,
+      prompt_position = "top",
+      mirror = true,
+    },
+    vimgrep_arguments = {
+      "rg",
+      "--color=never",
+      "--no-heading",
+      "--with-filename",
+      "--line-number",
+      "--column",
+      "--smart-case",
+      "--hidden",
+      "--glob=!.git/",
+    },
     mappings = {
       i = {
         ["<C-n>"] = actions.cycle_history_next,
@@ -38,8 +49,8 @@ telescope.setup {
 
         ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
         ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-        ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
-        ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
+        ["<C-S-q>"] = actions.send_to_qflist + actions.open_qflist,
+        ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
         ["<C-l>"] = actions.complete_tag,
         ["<C-_>"] = actions.which_key, -- keys from pressing <C-/>
       },
@@ -53,8 +64,8 @@ telescope.setup {
 
         ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
         ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-        ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
-        ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
+        ["<C-S-q>"] = actions.send_to_qflist + actions.open_qflist,
+        ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
 
         ["j"] = actions.move_selection_next,
         ["k"] = actions.move_selection_previous,
@@ -78,6 +89,22 @@ telescope.setup {
     },
   },
   pickers = {
+    find_files = {
+      hidden = true,
+    },
+    live_grep = {
+      only_sort_text = true,
+    },
+    grep_string = {
+      only_sort_text = true,
+    },
+    buffers = {
+      initial_mode = "normal",
+    },
+    git_files = {
+      hidden = true,
+      show_untracked = true,
+    },
   },
   extensions = {
     live_grep_args = {

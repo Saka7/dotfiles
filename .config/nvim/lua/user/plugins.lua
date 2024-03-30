@@ -43,7 +43,6 @@ local plugins = {
   { "tpope/vim-fugitive" },
   { "simrat39/symbols-outline.nvim" },
   { "nvim-pack/nvim-spectre" },
-  { "m4xshen/smartcolumn.nvim" },
 
   { "nvim-treesitter/nvim-treesitter" },
   { "neovim/nvim-lspconfig" },
@@ -51,6 +50,7 @@ local plugins = {
   { "williamboman/mason-lspconfig.nvim" },
   { "jose-elias-alvarez/null-ls.nvim" },
   { "RRethy/vim-illuminate" },
+  { "Wansmer/treesj" } ,
 
   {
     "hrsh7th/nvim-cmp",
@@ -67,10 +67,29 @@ local plugins = {
 
   {
     "nvim-neotest/neotest",
+    lazy = true,
+    cmd = "Neotest",
     dependencies = {
       "antoinemadec/FixCursorHold.nvim",
-      "haydenmeade/neotest-jest"
+      "haydenmeade/neotest-jest",
     },
+    config = function()
+      require("neotest").setup({
+        output = { open_on_run = true },
+        summary = {
+          open = 'leftabove vsplit | vertical resize 50'
+        },
+        adapters = {
+          require('neotest-jest')({
+            jestCommand = "npm test --",
+            env = { CI = true },
+            cwd = function(path)
+              return vim.fn.getcwd()
+            end,
+          }),
+        }
+      })
+    end
   },
 
   { "nvim-telescope/telescope.nvim" },
@@ -85,7 +104,7 @@ local plugins = {
     build = "npm i && npm run compile vsDebugServerBundle && mv dist out",
   },
   { "mfussenegger/nvim-dap" },
-  { "rcarriga/nvim-dap-ui" },
+  { "rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"} },
   { "mxsdev/nvim-dap-vscode-js" },
 }
 

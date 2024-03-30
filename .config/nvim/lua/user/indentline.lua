@@ -1,7 +1,5 @@
-local status_ok, indent_blankline = pcall(require, "indent_blankline")
-if not status_ok then
-	return
-end
+local indent_blankline = require("ibl")
+
 
 vim.g.indent_blankline_buftype_exclude = { "terminal", "nofile" }
 vim.g.indent_blankline_filetype_exclude = {
@@ -18,7 +16,6 @@ vim.g.indent_blankline_char = "▏"
 vim.g.indent_blankline_show_trailing_blankline_indent = false
 vim.g.indent_blankline_show_first_indent_level = true
 vim.g.indent_blankline_use_treesitter = true
-vim.g.indent_blankline_show_current_context = true
 vim.g.indent_blankline_context_patterns = {
 	"class",
 	"return",
@@ -41,9 +38,5 @@ vim.g.indent_blankline_context_patterns = {
 	"import_statement",
 	"operation_type",
 }
--- HACK: work-around for https://github.com/lukas-reineke/indent-blankline.nvim/issues/59
--- vim.wo.colorcolumn = "99999"
 
-indent_blankline.setup({
-	show_current_context = true,
-})
+indent_blankline.setup()
