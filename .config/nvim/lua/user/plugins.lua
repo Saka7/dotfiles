@@ -16,12 +16,13 @@ vim.opt.rtp:prepend(lazypath)
 local plugins = {
   { 'Mofiqul/vscode.nvim' },
   { 'folke/tokyonight.nvim' },
-  { 'sainnhe/gruvbox-material', lazy = true },
-  { "doums/darcula", lazy = true },
+  -- { 'sainnhe/gruvbox-material', lazy = true },
+  -- { "doums/darcula", lazy = true },
 
   { "nvim-lua/plenary.nvim" },
   { "windwp/nvim-autopairs" },
   { "kyazdani42/nvim-web-devicons" },
+  { "echasnovski/mini.nvim" },
   { "akinsho/bufferline.nvim" },
   { "nvim-lualine/lualine.nvim" },
   { "ahmedkhalf/project.nvim"},
@@ -72,40 +73,25 @@ local plugins = {
     dependencies = {
       "antoinemadec/FixCursorHold.nvim",
       "haydenmeade/neotest-jest",
-    },
-    config = function()
-      require("neotest").setup({
-        output = { open_on_run = true },
-        summary = {
-          open = 'leftabove vsplit | vertical resize 50'
-        },
-        adapters = {
-          require('neotest-jest')({
-            jestCommand = "npm test --",
-            env = { CI = true },
-            cwd = function(path)
-              return vim.fn.getcwd()
-            end,
-          }),
-        }
-      })
-    end
+    }
   },
 
   { "nvim-telescope/telescope.nvim" },
   { "nvim-telescope/telescope-live-grep-args.nvim" },
 
-  { "tpope/vim-dadbod", lazy = true },
-  { "kristijanhusak/vim-dadbod-ui", lazy = true },
+  { 'rmagatti/auto-session' },
 
   {
     "microsoft/vscode-js-debug",
-    version = "1.x",
+     version = "1.x",
     build = "npm i && npm run compile vsDebugServerBundle && mv dist out",
   },
   { "mfussenegger/nvim-dap" },
   { "rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"} },
   { "mxsdev/nvim-dap-vscode-js" },
+
+  -- { "tpope/vim-dadbod", lazy = true },
+  -- { "kristijanhusak/vim-dadbod-ui", lazy = true },
 }
 
 require("lazy").setup(plugins)

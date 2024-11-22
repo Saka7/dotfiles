@@ -77,7 +77,7 @@ local dap_config = {
       },
       floating = {
         max_height = 0.9,
-        max_width = 0.5, -- Floats will be treated as percentage of your screen.
+        max_width = 0.5,
         border = "rounded",
         mappings = {
           close = { "q", "<Esc>" },
@@ -85,26 +85,17 @@ local dap_config = {
       },
       windows = { indent = 1 },
       render = {
-        max_type_length = nil, -- Can be integer or nil.
-        max_value_lines = 100, -- Can be integer or nil.
+        max_type_length = nil,
+        max_value_lines = 100,
       },
     },
   },
 }
 
-local status_ok, dap = pcall(require, "dap")
-if not status_ok then
-  return
-end
+local dap = require("dap")
+local dapui = require("dapui")
 
 dap.set_log_level(dap_config.log.level)
-
-local status_ok, dap = pcall(require, "dap")
-if not status_ok then
-  return
-end
-
-local dapui = require "dapui"
 dapui.setup(dap_config.ui.config)
 
 if dap_config.ui.auto_open then

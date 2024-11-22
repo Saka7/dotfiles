@@ -47,4 +47,7 @@ nvim_tree.setup {
     width = 45,
     side = "left",
   },
+  filters = {
+    dotfiles = true,
+  },
 }

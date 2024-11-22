@@ -1,226 +1,158 @@
 local which_key = require("which-key")
 
-local setup = {
+local config = {
   plugins = {
-    marks = true,       -- shows a list of your marks on ' and `
-    registers = true,   -- shows your registers on " in NORMAL or <C-r> in INSERT mode
+    marks = true,
+    registers = true,
     spelling = {
-      enabled = true,   -- enabling this will show WhichKey when pressing z= to select spelling suggestions
-      suggestions = 20, -- how many suggestions should be shown in the list?
+      enabled = true,
+      suggestions = 20,
     },
     presets = {
-      operators = false,      -- adds help for operators like d, y, ... and registers them for motion / text object completion
-      motions = true,         -- adds help for motions
-      text_objects = true,    -- help for text objects triggered after entering an operator
-      windows = true,         -- default bindings on <c-w>
-      nav = true,             -- misc bindings to work with windows
-      z = true,               -- bindings for folds, spelling and others prefixed with z
-      g = true,               -- bindings for prefixed with g
+      operators = false,
+      motions = true,
+      text_objects = true,
+      windows = true,
+      nav = true,
+      z = true,
+      g = true,
     },
   },
-  key_labels = {
+  keys = {
+    scroll_down = "<c-d>",
+    scroll_up = "<c-u>",
   },
-  icons = {
-    breadcrumb = "»", -- symbol used in the command line area that shows your active key combo
-    separator = "➜", -- symbol used between a key and it's label
-    group = "+", -- symbol prepended to a group
-  },
-  popup_mappings = {
-    scroll_down = "<c-d>", -- binding to scroll down inside the popup
-    scroll_up = "<c-u>",   -- binding to scroll up inside the popup
-  },
-  window = {
-    border = "rounded",       -- none, single, double, shadow
-    position = "bottom",      -- bottom, top
-    margin = { 1, 0, 1, 0 },  -- extra window margin [top, right, bottom, left]
-    padding = { 2, 2, 2, 2 }, -- extra window padding [top, right, bottom, left]
-    winblend = 0,
-  },
-  layout = {
-    height = { min = 4, max = 25 },                                             -- min and max height of the columns
-    width = { min = 20, max = 50 },                                             -- min and max width of the columns
-    spacing = 3,                                                                -- spacing between columns
-    align = "left",                                                             -- align columns left, center or right
-  },
-  ignore_missing = true,                                                        -- enable this to hide mappings for which you didn't specify a label
-  hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ " }, -- hide mapping boilerplate
-  show_help = true,                                                             -- show help message on the command line when the popup is visible
-  triggers = "auto",                                                            -- automatically setup triggers
-  triggers_blacklist = {
-    i = { "j", "k" },
-    v = { "j", "k" },
-  },
-}
 
-local opts = {
-  mode = "n",     -- NORMAL mode
-  prefix = "<leader>",
-  buffer = nil,   -- Global mappings. Specify a buffer number for buffer local mappings
-  silent = true,  -- use `silent` when creating keymaps
-  noremap = true, -- use `noremap` when creating keymaps
-  nowait = true,  -- use `nowait` when creating keymaps
+  show_help = true,
+  show_keys = true,
+  triggers = { "<auto>", mode="nxso" }
 }
 
 local mappings = {
-  ["/"] = { "<Plug>(comment_toggle_linewise_current)", "Comment toggle" },
-  [";"] = { "<cmd>Alpha<cr>", "Dashboard" },
-  ["\\"] = { "<cmd>ToggleTerm<cr>", "Toggle terminal" },
-  ["c"] = { "<cmd>bdelete<cr>", "Close Buffer" },
-  ["o"] = { "<cmd>SymbolsOutline<cr>", "Outline" },
-  ["u"] = { "<cmd>UndotreeToggle<cr>", "UndoTree" },
-  ["b"] = {
-    "<cmd>lua require('telescope.builtin').buffers(require('telescope.themes').get_dropdown{previewer = false})<cr>",
-    "Buffers",
-  },
-  ["e"] = { "<cmd>NvimTreeToggle<cr>", "Explorer" },
-  ["h"] = { "<cmd>nohlsearch<CR>", "No Highlight" },
-  ["f"] = {
-    "<cmd>lua require('telescope.builtin').find_files(require('telescope.themes').get_dropdown{previewer = false})<cr>",
-    "Find files",
-  },
-  ["P"] = { "<cmd>lua require('telescope').extensions.projects.projects()<cr>", "Projects" },
-  F = {
-    name = "Folds",
-    o = { "<cmd>lua require('ufo').openAllFolds()<cr>", "Open All" },
-    c = { "<cmd>lua require('ufo').closeAllFolds()<cr>", "Close All" }
-  },
-  b = {
-    name = "Buffers",
-    j = { "<cmd>BufferLinePick<cr>", "Jump" },
-    f = { "<cmd>Telescope buffers<cr>", "Find" },
-    b = { "<cmd>BufferLineCyclePrev<cr>", "Previous" },
-    n = { "<cmd>BufferLineCycleNext<cr>", "Next" },
-    e = {
-      "<cmd>BufferLinePickClose<cr>",
-      "Pick which buffer to close",
+  {
+    buffer = nil,
+    silent = true,
+    noremap = true,
+    nowait = true,
+
+    { "<leader>/", "<Plug>(comment_toggle_linewise_current)", desc = "Comment toggle" },
+
+    { "<leader>;", "<cmd>Alpha<cr>" },
+
+    { "<leader>F", group = "Folds" },
+    { "<leader>Fc", "<cmd>lua require('ufo').closeAllFolds()<cr>", desc = "Close All" },
+    { "<leader>Fo", "<cmd>lua require('ufo').openAllFolds()<cr>", desc = "Open All" },
+
+    { "<leader>P", "<cmd>lua require('telescope').extensions.projects.projects()<cr>", desc = "Projects" },
+
+    { "<leader>\\", "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" },
+
+    { "<leader>b", group = "Buffers" },
+    { "<leader>bD", "<cmd>BufferLineSortByDirectory<cr>", desc = "Sort by directory" },
+    { "<leader>bb", "<cmd>BufferLineCyclePrev<cr>", desc = "Previous" },
+    { "<leader>be", "<cmd>BufferLinePickClose<cr>", desc = "Pick which buffer to close" },
+    { "<leader>bf", "<cmd>Telescope buffers<cr>", desc = "Find" },
+    { "<leader>bh", "<cmd>BufferLineCloseLeft<cr>", desc = "Close all to the left" },
+    { "<leader>bj", "<cmd>BufferLinePick<cr>", desc = "Jump" },
+    { "<leader>bl", "<cmd>BufferLineCloseRight<cr>", desc = "Close all to the right" },
+    { "<leader>bn", "<cmd>BufferLineCycleNext<cr>", desc = "Next" },
+    { "<leader>c", "<cmd>bdelete<cr>", desc = "Close Buffer" },
+
+    { "<leader>d", group = "Debug" },
+    { "<leader>dC", "<cmd>lua require'dap'.run_to_cursor()<cr>", desc = "Run To Cursor" },
+    { "<leader>dU", "<cmd>lua require'dapui'.toggle()<cr>", desc = "Toggle UI" },
+    { "<leader>db", "<cmd>lua require'dap'.step_back()<cr>", desc = "Step Back" },
+    { "<leader>dc", "<cmd>lua require'dap'.continue()<cr>", desc = "Continue" },
+    { "<leader>dd", "<cmd>lua require'dap'.disconnect()<cr>", desc = "Disconnect" },
+    { "<leader>dg", "<cmd>lua require'dap'.session()<cr>", desc = "Get Session" },
+    { "<leader>di", "<cmd>lua require'dap'.step_into()<cr>", desc = "Step Into" },
+    { "<leader>do", "<cmd>lua require'dap'.step_over()<cr>", desc = "Step Over" },
+    { "<leader>dp", "<cmd>lua require'dap'.pause()<cr>", desc = "Pause" },
+    { "<leader>dq", "<cmd>lua require'dap'.close()<cr>", desc = "Quit" },
+    { "<leader>dr", "<cmd>lua require'dap'.repl.toggle()<cr>", desc = "Toggle Repl" },
+    { "<leader>ds", "<cmd>lua require'dap'.continue()<cr>", desc = "Start" },
+    { "<leader>dt", "<cmd>lua require'dap'.toggle_breakpoint()<cr>", desc = "Toggle Breakpoint" },
+    { "<leader>du", "<cmd>lua require'dap'.step_out()<cr>", desc = "Step Out" },
+
+    { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "Explorer" },
+
+    {
+      "<leader>f",
+      "<cmd>lua require('telescope.builtin').find_files(require('telescope.themes').get_dropdown{previewer = false})<cr>",
+      desc = "Find files"
     },
-    h = { "<cmd>BufferLineCloseLeft<cr>", "Close all to the left" },
-    l = {
-      "<cmd>BufferLineCloseRight<cr>",
-      "Close all to the right",
-    },
-    D = {
-      "<cmd>BufferLineSortByDirectory<cr>",
-      "Sort by directory",
-    },
-    L = {
-      "<cmd>BufferLineSortByExtension<cr>",
-      "Sort by language",
-    },
-  },
-  d = {
-    name = "Debug",
-    t = { "<cmd>lua require'dap'.toggle_breakpoint()<cr>", "Toggle Breakpoint" },
-    b = { "<cmd>lua require'dap'.step_back()<cr>", "Step Back" },
-    c = { "<cmd>lua require'dap'.continue()<cr>", "Continue" },
-    C = { "<cmd>lua require'dap'.run_to_cursor()<cr>", "Run To Cursor" },
-    d = { "<cmd>lua require'dap'.disconnect()<cr>", "Disconnect" },
-    g = { "<cmd>lua require'dap'.session()<cr>", "Get Session" },
-    i = { "<cmd>lua require'dap'.step_into()<cr>", "Step Into" },
-    o = { "<cmd>lua require'dap'.step_over()<cr>", "Step Over" },
-    u = { "<cmd>lua require'dap'.step_out()<cr>", "Step Out" },
-    p = { "<cmd>lua require'dap'.pause()<cr>", "Pause" },
-    r = { "<cmd>lua require'dap'.repl.toggle()<cr>", "Toggle Repl" },
-    s = { "<cmd>lua require'dap'.continue()<cr>", "Start" },
-    q = { "<cmd>lua require'dap'.close()<cr>", "Quit" },
-    U = { "<cmd>lua require'dapui'.toggle()<cr>", "Toggle UI" },
-  },
-  g = {
-    name = "Git",
-    j = { "<cmd>lua require 'gitsigns'.next_hunk({navigation_message = false})<cr>", "Next Hunk" },
-    k = { "<cmd>lua require 'gitsigns'.prev_hunk({navigation_message = false})<cr>", "Prev Hunk" },
-    l = { "<cmd>lua require 'gitsigns'.blame_line()<cr>", "Blame" },
-    L = { "<cmd>G blame<cr>", "Toggle Blame" },
-    p = { "<cmd>lua require 'gitsigns'.preview_hunk()<cr>", "Preview Hunk" },
-    r = { "<cmd>lua require 'gitsigns'.reset_hunk()<cr>", "Reset Hunk" },
-    R = { "<cmd>lua require 'gitsigns'.reset_buffer()<cr>", "Reset Buffer" },
-    s = { "<cmd>lua require 'gitsigns'.stage_hunk()<cr>", "Stage Hunk" },
-    u = {
-      "<cmd>lua require 'gitsigns'.undo_stage_hunk()<cr>",
-      "Undo Stage Hunk",
-    },
-    o = { "<cmd>Telescope git_status<cr>", "Open changed file" },
-    b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
-    c = { "<cmd>Telescope git_commits<cr>", "Checkout commit" },
-    C = {
-      "<cmd>Telescope git_bcommits<cr>",
-      "Checkout commit(for current file)",
-    },
-    d = {
-      "<cmd>Gitsigns diffthis HEAD<cr>",
-      "Git Diff",
-    },
-  },
-  l = {
-    name = "LSP",
-    a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
-    d = { "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", "Buffer Diagnostics" },
-    w = { "<cmd>Telescope diagnostics<cr>", "Diagnostics" },
-    i = { "<cmd>LspInfo<cr>", "Info" },
-    j = {
-      vim.diagnostic.goto_next,
-      "Next Diagnostic",
-    },
-    k = {
-      vim.diagnostic.goto_prev,
-      "Prev Diagnostic",
-    },
-    l = { vim.lsp.codelens.run, "CodeLens Action" },
-    f = { "<cmd>lua vim.lsp.buf.format({ timeout_ms = 2000 })<cr>", "Format" },
-    q = { vim.diagnostic.setloclist, "Quickfix" },
-    r = { vim.lsp.buf.rename, "Rename" },
-    s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
-    S = {
-      "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
-      "Workspace Symbols",
-    },
-    e = { "<cmd>Telescope quickfix<cr>", "Telescope Quickfix" },
-    t = { "<cmd>lua require('treesj').toggle()<cr>", "Split/Join" }
-  },
-  s = {
-    name = "Search",
-    b = { "<cmd>Telescope git_branches<cr>", "Checkout branch" },
-    f = { "<cmd>Telescope find_files<cr>", "Find File" },
-    r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File" },
-    t = { "<cmd>Telescope live_grep<cr>", "Text" },
-    T = { "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args()<cr>", "Text with args" },
-    R = { "<cmd>Telescope registers<cr>", "Registers" },
-    C = { "<cmd>Telescope commands<cr>", "Commands" },
-  },
-  t = {
-    name = "Tests",
-    t = { '<cmd>Neotest summary<cr>', "toggle summary" },
-    f = { '<cmd>Neotest run file<cr>', "run file" },
-    n = { '<cmd>Neotest run<cr>', "run nearest" },
-    l = { '<cmd>Neotest run last<cr>', "run last" },
-    L = { '<cmd>Neotest run last strategy="dap"<cr>', "debug last" },
-    d = { '<cmd>Neotest run strategy="dap"<cr>', "debug nearest" },
-    s = { '<cmd>Neotest stop<cr>', "stop nearest" },
-    a = { '<cmd>Neotest attach<cr>', "attach to nearest" },
-  },
-  r = {
-    name = "Spectre",
-    c = { "<cmd>lua require(\"spectre\").open_visual({select_word=true})<CR>", 'Search current word' },
-    f = { "<cmd>lua require(\"spectre\").open_visual({select_word=true})<CR>", 'Search current file' },
-    r = { ":Spectre<cr>", "Open Spectre" },
-  },
+
+    { "<leader>g", group = "Git" },
+    { "<leader>gC", "<cmd>Telescope git_bcommits<cr>" },
+    { "<leader>gL", "<cmd>G blame<cr>", desc = "Toggle Blame" },
+    { "<leader>gR", "<cmd>lua require 'gitsigns'.reset_buffer()<cr>", desc = "Reset Buffer" },
+    { "<leader>gb", "<cmd>Telescope git_branches<cr>", desc = "Checkout branch" },
+    { "<leader>gc", "<cmd>Telescope git_commits<cr>", desc = "Checkout commit" },
+    { "<leader>gd", "<cmd>Gitsigns diffthis HEAD<cr>", desc = "Git Diff" },
+    { "<leader>gj", "<cmd>lua require 'gitsigns'.next_hunk({navigation_message = false})<cr>", desc = "Next Hunk" },
+    { "<leader>gk", "<cmd>lua require 'gitsigns'.prev_hunk({navigation_message = false})<cr>", desc = "Prev Hunk" },
+    { "<leader>gl", "<cmd>lua require 'gitsigns'.blame_line()<cr>", desc = "Blame" },
+    { "<leader>go", "<cmd>Telescope git_status<cr>", desc = "Open changed file" },
+    { "<leader>gp", "<cmd>lua require 'gitsigns'.preview_hunk()<cr>", desc = "Preview Hunk" },
+    { "<leader>gr", "<cmd>lua require 'gitsigns'.reset_hunk()<cr>", desc = "Reset Hunk" },
+    { "<leader>gs", "<cmd>lua require 'gitsigns'.stage_hunk()<cr>", desc = "Stage Hunk" },
+    { "<leader>gu", "<cmd>lua require 'gitsigns'.undo_stage_hunk()<cr>", desc = "Undo Stage Hunk" },
+
+    { "<leader>h", "<cmd>nohlsearch<CR>", desc = "No Highlight" },
+
+    { "<leader>l", group = "LSP"  },
+    { "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Workspace Symbols" },
+    { "<leader>la", "<cmd>lua vim.lsp.buf.code_action()<cr>", desc = "Code Action" },
+    { "<leader>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", desc = "Format" },
+    { "<leader>ld", "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", desc = "Buffer Diagnostics" },
+    { "<leader>le", "<cmd>Telescope quickfix<cr>", desc = "Telescope Quickfix" },
+    { "<leader>lf", "<cmd>lua vim.lsp.buf.format({ timeout_ms = 2000 })<cr>", desc = "Format" },
+    { "<leader>li", "<cmd>LspInfo<cr>", desc = "Info" },
+    { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Document Symbols" },
+    { "<leader>lt", "<cmd>lua require('treesj').toggle()<cr>", desc = "Split/Join" },
+    { "<leader>lj", "<cmd>lua vim.diagnostic.goto_next({buffer=0})<cr>", desc = "Next" },
+    { "<leader>lk", "<cmd>lua vim.diagnostic.goto_prev({buffer=0})<cr>", desc = "Prev" },
+    { "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>", desc = "Rename" },
+    { "<leader>lq", "<cmd>lua vim.diagnostic.setloclist()<CR>", desc = "Set loc list" },
+    { "<leader>lw", "<cmd>Telescope diagnostics<cr>", desc = "Diagnostics" },
+
+    { "<leader>o", "<cmd>SymbolsOutline<cr>", desc = "Outline" },
+
+    { "<leader>r", group = "Spectre" },
+    { "<leader>rc", '<cmd>lua require("spectre").open_visual({select_word=true})<CR>', desc = "Search current word" },
+    { "<leader>rf", '<cmd>lua require("spectre").open_visual({select_word=true})<CR>', desc = "Search current file" },
+    { "<leader>rr", ":Spectre<cr>", desc = "Open Spectre" },
+
+    { "<leader>s", group = "Search" },
+    { "<leader>sC", "<cmd>Telescope commands<cr>", desc = "Commands" },
+    { "<leader>sR", "<cmd>Telescope registers<cr>", desc = "Registers" },
+    { "<leader>st", "<cmd>Telescope live_grep<cr>", desc = "Text" },
+    { "<leader>sT", "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args()<cr>", desc = "Text with args" },
+    { "<leader>sb", "<cmd>Telescope git_branches<cr>", desc = "Checkout branch" },
+    { "<leader>sf", "<cmd>Telescope find_files<cr>", desc = "Find File" },
+    { "<leader>sr", "<cmd>Telescope oldfiles<cr>", desc = "Open Recent File" },
+
+    { "<leader>t", group = "Tests" },
+    { "<leader>tL", '<cmd>Neotest run last strategy="dap"<cr>', desc = "Debug last" },
+    { "<leader>tO", "<cmd>Neotest output<cr>", desc = "Output" },
+    { "<leader>ta", "<cmd>Neotest attach<cr>", desc = "Attach to nearest" },
+    { "<leader>td", '<cmd>Neotest run strategy="dap"<cr>', desc = "Debug nearest" },
+    { "<leader>tf", "<cmd>Neotest run file<cr>", desc = "Run file" },
+    { "<leader>tl", "<cmd>Neotest run last<cr>", desc = "Run last" },
+    { "<leader>tn", "<cmd>Neotest run<cr>", desc = "Run nearest" },
+    { "<leader>to", "<cmd>Neotest output-panel<cr>", desc = "Output panel" },
+    { "<leader>ts", "<cmd>Neotest stop<cr>", desc = "Stop nearest" },
+    { "<leader>tt", "<cmd>Neotest summary<cr>", desc = "Toggle summary" },
+
+    { "<leader>u", "<cmd>UndotreeToggle<cr>", desc = "UndoTree" },
+    {
+      mode = { "v" },
+      { "<leader>/", "<Plug>(comment_toggle_linewise_visual)", desc = "Comment" },
+      { "<leader>f", "<cmd>lua vim.lsp.buf.format({ timeout_ms = 2000 })<cr>", desc = "Format" }
+    }
+  }
 }
 
-local vopts = {
-  mode = "v",
-  prefix = "<leader>",
-  buffer = nil,   -- Global mappings. Specify a buffer number for buffer local mappings
-  silent = true,  -- use `silent` when creating keymaps
-  noremap = true, -- use `noremap` when creating keymaps
-  nowait = true,  -- use `nowait` when creating keymaps
-}
+which_key.setup(config)
+which_key.add(mappings)
 
-local vmappings = {
-  ["/"] = { "<Plug>(comment_toggle_linewise_visual)", "Comment" },
-  ["f"] = { "<cmd>lua vim.lsp.buf.format({ timeout_ms = 2000 })<cr>", "Format" },
-}
-
-which_key.setup(setup)
-
-which_key.register(mappings, opts)
-which_key.register(vmappings, vopts)
