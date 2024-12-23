@@ -1,5 +1,4 @@
 require('neotest').setup({
-  output = { open_on_run = true },
   discovery = {
 		enabled = false,
 	},

@@ -5,7 +5,6 @@ telescope.setup {
   defaults = {
     prompt_prefix = " ",
     selection_caret = " ",
-    -- path_display = { "smart" },
     layout_strategy = 'vertical',
     layout_config = {
       width = 0.95,
@@ -49,10 +48,9 @@ telescope.setup {
 
         ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
         ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-        ["<C-S-q>"] = actions.send_to_qflist + actions.open_qflist,
+        ["<C-A-q>"] = actions.send_to_qflist + actions.open_qflist,
         ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
         ["<C-l>"] = actions.complete_tag,
-        ["<C-_>"] = actions.which_key, -- keys from pressing <C-/>
       },
 
       n = {
@@ -64,7 +62,7 @@ telescope.setup {
 
         ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
         ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-        ["<C-S-q>"] = actions.send_to_qflist + actions.open_qflist,
+        ["<C-A-q>"] = actions.send_to_qflist + actions.open_qflist,
         ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
 
         ["j"] = actions.move_selection_next,

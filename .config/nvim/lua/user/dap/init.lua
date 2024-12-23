@@ -25,7 +25,7 @@ local dap_config = {
     level = "info",
   },
   ui = {
-    auto_open = true,
+    auto_open = false,
     notify = {
       threshold = vim.log.levels.INFO,
     },
@@ -107,6 +107,10 @@ end
 require("dap-vscode-js").setup({
   debugger_path = home_dir .. "/.npm/vscode-js-debug",
   adapters = { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' },
+})
+
+require("nvim-dap-virtual-text").setup({
+  enabled = false
 })
 
 dap.configurations.javascript = {

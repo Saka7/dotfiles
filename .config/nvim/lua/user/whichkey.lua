@@ -59,20 +59,22 @@ local mappings = {
     { "<leader>c", "<cmd>bdelete<cr>", desc = "Close Buffer" },
 
     { "<leader>d", group = "Debug" },
+    { "<leader>dt", "<cmd>lua require'dap'.toggle_breakpoint()<cr>", desc = "Toggle Breakpoint" },
     { "<leader>dC", "<cmd>lua require'dap'.run_to_cursor()<cr>", desc = "Run To Cursor" },
-    { "<leader>dU", "<cmd>lua require'dapui'.toggle()<cr>", desc = "Toggle UI" },
     { "<leader>db", "<cmd>lua require'dap'.step_back()<cr>", desc = "Step Back" },
-    { "<leader>dc", "<cmd>lua require'dap'.continue()<cr>", desc = "Continue" },
-    { "<leader>dd", "<cmd>lua require'dap'.disconnect()<cr>", desc = "Disconnect" },
-    { "<leader>dg", "<cmd>lua require'dap'.session()<cr>", desc = "Get Session" },
+    { "<leader>du", "<cmd>lua require'dap'.step_out()<cr>", desc = "Step Out" },
     { "<leader>di", "<cmd>lua require'dap'.step_into()<cr>", desc = "Step Into" },
     { "<leader>do", "<cmd>lua require'dap'.step_over()<cr>", desc = "Step Over" },
-    { "<leader>dp", "<cmd>lua require'dap'.pause()<cr>", desc = "Pause" },
-    { "<leader>dq", "<cmd>lua require'dap'.close()<cr>", desc = "Quit" },
-    { "<leader>dr", "<cmd>lua require'dap'.repl.toggle()<cr>", desc = "Toggle Repl" },
+    { "<leader>dc", "<cmd>lua require'dap'.continue()<cr>", desc = "Continue" },
     { "<leader>ds", "<cmd>lua require'dap'.continue()<cr>", desc = "Start" },
-    { "<leader>dt", "<cmd>lua require'dap'.toggle_breakpoint()<cr>", desc = "Toggle Breakpoint" },
-    { "<leader>du", "<cmd>lua require'dap'.step_out()<cr>", desc = "Step Out" },
+    { "<leader>dp", "<cmd>lua require'dap'.pause()<cr>", desc = "Pause" },
+    { "<leader>dg", "<cmd>lua require'dap'.session()<cr>", desc = "Get Session" },
+    { "<leader>de", "<cmd>lua require'dapui'.eval(nil, { enter = true })<cr>", desc = "Eval expression" },
+    { "<leader>dr", "<cmd>lua require'dap'.repl.toggle()<cr>", desc = "Toggle Repl" },
+    { "<leader>dV", "<cmd>DapVirtualTextToggle<cr>", desc = "Toggle Virtual Text" },
+    { "<leader>dU", "<cmd>lua require'dapui'.toggle()<cr>", desc = "Toggle UI" },
+    { "<leader>dd", "<cmd>lua require'dap'.disconnect()<cr>", desc = "Disconnect" },
+    { "<leader>dq", "<cmd>lua require'dap'.close()<cr>", desc = "Quit" },
 
     { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "Explorer" },
 
@@ -86,6 +88,8 @@ local mappings = {
     { "<leader>gC", "<cmd>Telescope git_bcommits<cr>" },
     { "<leader>gL", "<cmd>G blame<cr>", desc = "Toggle Blame" },
     { "<leader>gR", "<cmd>lua require 'gitsigns'.reset_buffer()<cr>", desc = "Reset Buffer" },
+    { "<leader>gH", "<cmd>DiffviewFileHistory %<cr>", desc = "File History" },
+    { "<leader>gO", "<cmd>DiffviewOpen<cr>", desc = "Diff View" },
     { "<leader>gb", "<cmd>Telescope git_branches<cr>", desc = "Checkout branch" },
     { "<leader>gc", "<cmd>Telescope git_commits<cr>", desc = "Checkout commit" },
     { "<leader>gd", "<cmd>Gitsigns diffthis HEAD<cr>", desc = "Git Diff" },
@@ -118,11 +122,6 @@ local mappings = {
 
     { "<leader>o", "<cmd>SymbolsOutline<cr>", desc = "Outline" },
 
-    { "<leader>r", group = "Spectre" },
-    { "<leader>rc", '<cmd>lua require("spectre").open_visual({select_word=true})<CR>', desc = "Search current word" },
-    { "<leader>rf", '<cmd>lua require("spectre").open_visual({select_word=true})<CR>', desc = "Search current file" },
-    { "<leader>rr", ":Spectre<cr>", desc = "Open Spectre" },
-
     { "<leader>s", group = "Search" },
     { "<leader>sC", "<cmd>Telescope commands<cr>", desc = "Commands" },
     { "<leader>sR", "<cmd>Telescope registers<cr>", desc = "Registers" },
@@ -131,6 +130,7 @@ local mappings = {
     { "<leader>sb", "<cmd>Telescope git_branches<cr>", desc = "Checkout branch" },
     { "<leader>sf", "<cmd>Telescope find_files<cr>", desc = "Find File" },
     { "<leader>sr", "<cmd>Telescope oldfiles<cr>", desc = "Open Recent File" },
+    { "<leader>sl", "<cmd>Telescope resume<cr>", desc = "Last Search" },
 
     { "<leader>t", group = "Tests" },
     { "<leader>tL", '<cmd>Neotest run last strategy="dap"<cr>', desc = "Debug last" },
@@ -148,7 +148,11 @@ local mappings = {
     {
       mode = { "v" },
       { "<leader>/", "<Plug>(comment_toggle_linewise_visual)", desc = "Comment" },
-      { "<leader>f", "<cmd>lua vim.lsp.buf.format({ timeout_ms = 2000 })<cr>", desc = "Format" }
+      { "<leader>f", "<cmd>lua vim.lsp.buf.format({ timeout_ms = 2000 })<cr>", desc = "Format" },
+      {
+        "<leader>s", "<cmd>lua require('telescope.builtin').grep_string({ default_text = vim.fn.getreg('\"') })<cr>",
+        desc = "Search"
+      }
     }
   }
 }
