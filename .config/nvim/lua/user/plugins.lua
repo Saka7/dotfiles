@@ -84,13 +84,14 @@ local plugins = {
 
   {
     "microsoft/vscode-js-debug",
-     version = "1.x",
-    build = "npm i && npm run compile vsDebugServerBundle && mv dist out",
+    version = "1.x",
+    build = "npm i && npm run compile dapDebugServer",
   },
   { "mfussenegger/nvim-dap" },
   { "rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"} },
-  { "mxsdev/nvim-dap-vscode-js" },
-  { 'theHamsta/nvim-dap-virtual-text' }
+  { 'theHamsta/nvim-dap-virtual-text' },
+  { 'LiadOz/nvim-dap-repl-highlights' },
+  { 'rcarriga/cmp-dap' }
 }
 
 require("lazy").setup(plugins)
