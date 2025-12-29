@@ -26,19 +26,15 @@ require("mason").setup(settings)
 require("mason-lspconfig").setup({
 	ensure_installed = servers,
 	automatic_installation = true,
+    automatic_enable = false,
 })
 
-local lspconfig_status_ok, lspconfig = pcall(require, "lspconfig")
-if not lspconfig_status_ok then
-	return
-end
-
-local opts = {}
+local handlers = require("user.lsp.handlers")
 
 for _, server in pairs(servers) do
-	opts = {
-		on_attach = require("user.lsp.handlers").on_attach,
-		capabilities = require("user.lsp.handlers").capabilities,
+	local opts = {
+		on_attach = handlers.on_attach,
+		capabilities = handlers.capabilities,
 	}
 
 	server = vim.split(server, "@")[1]
@@ -48,5 +44,6 @@ for _, server in pairs(servers) do
 		opts = vim.tbl_deep_extend("force", conf_opts, opts)
 	end
 
-	lspconfig[server].setup(opts)
+	vim.lsp.config[server] = opts
+	vim.lsp.enable(server)
 end

@@ -1,6 +1,6 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     "git",
     "clone",
@@ -17,14 +17,13 @@ local plugins = {
   { 'Mofiqul/vscode.nvim' },
   { 'folke/tokyonight.nvim' },
   { "kyazdani42/nvim-web-devicons" },
-  { "echasnovski/mini.nvim" },
+  -- { "echasnovski/mini.nvim" },
 
   { "nvim-lua/plenary.nvim" },
   { "windwp/nvim-autopairs" },
   { "akinsho/bufferline.nvim" },
   { "nvim-lualine/lualine.nvim" },
   { "ahmedkhalf/project.nvim"},
-  { "lewis6991/impatient.nvim" },
   { "goolord/alpha-nvim" },
   { "folke/which-key.nvim" },
   { "lukas-reineke/indent-blankline.nvim" },
@@ -37,17 +36,23 @@ local plugins = {
   { "kyazdani42/nvim-tree.lua" },
   { "akinsho/toggleterm.nvim" },
   { "jremmen/vim-ripgrep" },
-  { "simrat39/symbols-outline.nvim" },
+  { "hedyhli/outline.nvim" },
   { "kevinhwang91/nvim-ufo", dependencies = { "kevinhwang91/promise-async" } },
   { "lewis6991/gitsigns.nvim" },
-  { "tpope/vim-fugitive" },
+  {
+    "tpope/vim-fugitive",
+    dependencies = { "tpope/vim-rhubarb" },
+  },
   { "sindrets/diffview.nvim" },
 
   { "nvim-treesitter/nvim-treesitter" },
   { "neovim/nvim-lspconfig" },
   { "williamboman/mason.nvim" },
   { "williamboman/mason-lspconfig.nvim" },
-  { "jose-elias-alvarez/null-ls.nvim" },
+  {
+    "nvimtools/none-ls.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+  },
   { "RRethy/vim-illuminate" },
   { "Wansmer/treesj" } ,
 

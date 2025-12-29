@@ -7,6 +7,7 @@ require('neotest').setup({
   },
   adapters = {
     require('neotest-jest')({
+      jest_test_discovery = false,
       jestCommand = "npm test --",
       env = { CI = true, TZ = "UTC" },
       cwd = function(path)

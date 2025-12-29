@@ -1,3 +1,9 @@
+if not vim.lsp.buf_get_clients then
+  vim.lsp.buf_get_clients = function(bufnr)
+    return vim.lsp.get_clients({ bufnr = bufnr })
+  end
+end
+
 local project = require("project_nvim")
 local telescope = require("telescope")
 
