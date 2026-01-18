@@ -45,6 +45,7 @@ local mappings = {
 
     { "<leader>P", "<cmd>lua require('telescope').extensions.projects.projects()<cr>", desc = "Projects" },
 
+    { "<leader>T", "<cmd>term<cr>", desc = "Terminal new tab" },
     { "<leader>\\", "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" },
 
     { "<leader>b", group = "Buffers" },
@@ -52,9 +53,10 @@ local mappings = {
     { "<leader>bb", "<cmd>BufferLineCyclePrev<cr>", desc = "Previous" },
     { "<leader>be", "<cmd>BufferLinePickClose<cr>", desc = "Pick which buffer to close" },
     { "<leader>bf", "<cmd>Telescope buffers<cr>", desc = "Find" },
+    { "<leader>bo", "<cmd>BufferLineCloseOthers<cr>", desc = "Close others" },
     { "<leader>bh", "<cmd>BufferLineCloseLeft<cr>", desc = "Close all to the left" },
-    { "<leader>bj", "<cmd>BufferLinePick<cr>", desc = "Jump" },
     { "<leader>bl", "<cmd>BufferLineCloseRight<cr>", desc = "Close all to the right" },
+    { "<leader>bj", "<cmd>BufferLinePick<cr>", desc = "Jump" },
     { "<leader>bn", "<cmd>BufferLineCycleNext<cr>", desc = "Next" },
     { "<leader>c", "<cmd>bdelete<cr>", desc = "Close Buffer" },
 
