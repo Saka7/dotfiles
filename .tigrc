@@ -1,0 +1,7 @@
+set split-view-width = 70%
+set main-view-date = relative-compact
+set main-view-author = abbreviated
+
+# set main-view-date = custom
+# set main-view-date-format = "%Y-%m-%d %H:%M"
+
