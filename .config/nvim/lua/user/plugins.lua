@@ -17,7 +17,6 @@ local plugins = {
   { 'Mofiqul/vscode.nvim' },
   { 'folke/tokyonight.nvim' },
   { "kyazdani42/nvim-web-devicons" },
-  -- { "echasnovski/mini.nvim" },
 
   { "nvim-lua/plenary.nvim" },
   { "windwp/nvim-autopairs" },
@@ -49,10 +48,7 @@ local plugins = {
   { "neovim/nvim-lspconfig" },
   { "williamboman/mason.nvim" },
   { "williamboman/mason-lspconfig.nvim" },
-  {
-    "nvimtools/none-ls.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-  },
+  { "stevearc/conform.nvim" },
   { "RRethy/vim-illuminate" },
   { "Wansmer/treesj" } ,
 
@@ -96,6 +92,7 @@ local plugins = {
   { "rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"} },
   { 'theHamsta/nvim-dap-virtual-text' },
   { 'LiadOz/nvim-dap-repl-highlights' },
+  { "hat0uma/csvview.nvim" }
 }
 
 require("lazy").setup(plugins)

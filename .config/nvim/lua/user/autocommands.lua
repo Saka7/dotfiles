@@ -28,5 +28,10 @@ vim.cmd [[
     autocmd!
     autocmd User AlphaReady set showtabline=0 | autocmd BufUnload <buffer> set showtabline=2
   augroup end
+  augroup _csvview
+    autocmd!
+    autocmd BufReadPost,BufNewFile *.csv silent! CsvViewEnable
+    autocmd FileType csv silent! CsvViewEnable
+  augroup end
 ]]
 

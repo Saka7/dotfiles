@@ -106,7 +106,10 @@ telescope.setup {
   },
   extensions = {
     live_grep_args = {
-      auto_quoting = true
+      auto_quoting = true,
     }
   },
 }
+
+pcall(telescope.load_extension, "live_grep_args")
+

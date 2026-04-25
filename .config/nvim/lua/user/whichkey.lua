@@ -111,10 +111,11 @@ local mappings = {
     { "<leader>l", group = "LSP"  },
     { "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Workspace Symbols" },
     { "<leader>la", "<cmd>lua vim.lsp.buf.code_action()<cr>", desc = "Code Action" },
-    { "<leader>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", desc = "Format" },
+    { "<leader>lf", "<cmd>lua require('conform').format({ timeout_ms = 2000 })<cr>", desc = "Format" },
     { "<leader>ld", "<cmd>Telescope diagnostics bufnr=0 theme=get_ivy<cr>", desc = "Buffer Diagnostics" },
+    { "<leader>lD", "<cmd>lua require('user.lsp').stop_all()<cr>", desc = "Disable all LSP" },
+    { "<leader>lLS", "<cmd>lua require('user.lsp').start_all()<cr>", desc = "Enable all LSP" },
     { "<leader>le", "<cmd>Telescope quickfix<cr>", desc = "Telescope Quickfix" },
-    { "<leader>lf", "<cmd>lua vim.lsp.buf.format({ timeout_ms = 2000 })<cr>", desc = "Format" },
     { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Document Symbols" },
     { "<leader>lt", "<cmd>lua require('treesj').toggle()<cr>", desc = "Split/Join" },
     { "<leader>lj", "<cmd>lua vim.diagnostic.jump({count=1, float=true})<cr>", desc = "Next" },
@@ -128,9 +129,19 @@ local mappings = {
     { "<leader>s", group = "Search" },
     { "<leader>sC", "<cmd>Telescope commands<cr>", desc = "Commands" },
     { "<leader>sR", "<cmd>Telescope registers<cr>", desc = "Registers" },
-    { "<leader>st", "<cmd>Telescope live_grep<cr>", desc = "Text" },
-    { "<leader>sT", "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args()<cr>", desc = "Text with args" },
+    {
+      "<leader>st",
+      "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args({ additional_args = {'-g','!tests','-tts','-tjs', '-F'} })<cr>",
+      desc = "Text Args (Selected)",
+    },
+    { "<leader>sT", "<cmd>Telescope live_grep<cr>", desc = "Text" },
+    {
+      "<leader>sTT",
+      "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args({})<cr>",
+      desc = "Text Args (Full)",
+    },
     { "<leader>sB", "<cmd>Telescope git_branches<cr>", desc = "Checkout branch" },
+
     { "<leader>sf", "<cmd>Telescope find_files<cr>", desc = "Find File" },
     { "<leader>sr", "<cmd>Telescope oldfiles<cr>", desc = "Open Recent File" },
     { "<leader>sl", "<cmd>Telescope resume<cr>", desc = "Last Search" },
@@ -152,7 +163,7 @@ local mappings = {
     {
       mode = { "v" },
       { "<leader>/", "<Plug>(comment_toggle_linewise_visual)", desc = "Comment" },
-      { "<leader>f", "<cmd>lua vim.lsp.buf.format({ timeout_ms = 2000 })<cr>", desc = "Format" },
+      { "<leader>f", "<cmd>lua require('conform').format({ timeout_ms = 2000 })<cr>", desc = "Format" },
       {
         "<leader>s", "<cmd>lua require('telescope.builtin').grep_string({ default_text = vim.fn.getreg('\"') })<cr>",
         desc = "Search"
