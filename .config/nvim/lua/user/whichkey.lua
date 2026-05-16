@@ -38,6 +38,67 @@ local mappings = {
     { "<leader>/", "<Plug>(comment_toggle_linewise_current)", desc = "Comment toggle" },
 
     { "<leader>;", "<cmd>Alpha<cr>" },
+    {
+      "<c-.>",
+      "<cmd>lua require('sidekick.cli').focus()<cr>",
+      desc = "Sidekick Focus",
+      mode = { "n", "t", "i", "x" },
+    },
+
+    { "<leader>a", group = "AI" },
+    {
+      "<leader>aa",
+      function()
+        require("sidekick.cli").toggle({
+          name = "copilot",
+          focus = true,
+        })
+      end,
+      desc = "Sidekick Toggle CLI",
+    },
+    {
+      "<leader>ad",
+      "<cmd>lua require('sidekick.cli').close()<cr>",
+      desc = "Detach a CLI Session",
+    },
+    {
+      "<leader>at",
+      function()
+        require("sidekick.cli").send({
+          msg = '{this}',
+          name = "copilot",
+        })
+      end,
+      mode = { "x", "n" },
+      desc = "Send This",
+    },
+    {
+      "<leader>af",
+      function()
+        require("sidekick.cli").send({
+          msg = '{file}',
+          name = "copilot",
+        })
+      end,
+      desc = "Send File",
+    },
+    {
+      "<leader>av",
+      function()
+        require("sidekick.cli").send({
+          msg = '{selection}',
+          name = "copilot",
+        })
+      end,
+      mode = { "x" },
+      desc = "Send Visual Selection",
+    },
+    {
+      "<leader>ap",
+      "<cmd>lua require('sidekick.cli').prompt()<cr>",
+      mode = { "n", "x" },
+      desc = "Sidekick Select Prompt",
+    },
 
     { "<leader>F", group = "Folds" },
     { "<leader>Fc", "<cmd>lua require('ufo').closeAllFolds()<cr>", desc = "Close All" },
@@ -131,7 +192,11 @@ local mappings = {
     { "<leader>sR", "<cmd>Telescope registers<cr>", desc = "Registers" },
     {
       "<leader>st",
-      "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args({ additional_args = {'-g','!tests','-tts','-tjs', '-F'} })<cr>",
+      function()
+        require('telescope').extensions.live_grep_args.live_grep_args({
+          additional_args = {'-g','!tests','-tts','-tjs', '-F'}
+        })
+      end,
       desc = "Text Args (Selected)",
     },
     { "<leader>sT", "<cmd>Telescope live_grep<cr>", desc = "Text" },
@@ -174,4 +239,3 @@ local mappings = {
 
 which_key.setup(config)
 which_key.add(mappings)
-

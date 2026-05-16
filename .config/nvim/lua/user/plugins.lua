@@ -92,7 +92,8 @@ local plugins = {
   { "rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"} },
   { 'theHamsta/nvim-dap-virtual-text' },
   { 'LiadOz/nvim-dap-repl-highlights' },
-  { "hat0uma/csvview.nvim" }
+  { "hat0uma/csvview.nvim" },
+  { "folke/sidekick.nvim" }
 }
 
 require("lazy").setup(plugins)
