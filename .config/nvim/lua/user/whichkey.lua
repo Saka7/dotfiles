@@ -104,7 +104,13 @@ local mappings = {
     { "<leader>Fc", "<cmd>lua require('ufo').closeAllFolds()<cr>", desc = "Close All" },
     { "<leader>Fo", "<cmd>lua require('ufo').openAllFolds()<cr>", desc = "Open All" },
 
-    { "<leader>P", "<cmd>lua require('telescope').extensions.projects.projects()<cr>", desc = "Projects" },
+    {
+      "<leader>P",
+      function()
+        require("telescope").extensions.projects.projects()
+      end,
+      desc = "Projects",
+    },
 
     { "<leader>T", "<cmd>term<cr>", desc = "Terminal new tab" },
     { "<leader>\\", "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" },
@@ -157,8 +163,20 @@ local mappings = {
     { "<leader>gb", "<cmd>Telescope git_branches<cr>", desc = "Checkout branch" },
     { "<leader>gc", "<cmd>Telescope git_commits<cr>", desc = "Checkout commit" },
     { "<leader>gd", "<cmd>Gitsigns diffthis HEAD<cr>", desc = "Git Diff" },
-    { "<leader>gj", "<cmd>lua require('gitsigns').next_hunk({navigation_message = false})<cr>", desc = "Next Hunk" },
-    { "<leader>gk", "<cmd>lua require('gitsigns').prev_hunk({navigation_message = false})<cr>", desc = "Prev Hunk" },
+    {
+      "<leader>gj",
+      function()
+        require("gitsigns").nav_hunk("next", { navigation_message = false })
+      end,
+      desc = "Next Hunk",
+    },
+    {
+      "<leader>gk",
+      function()
+        require("gitsigns").nav_hunk("prev", { navigation_message = false })
+      end,
+      desc = "Prev Hunk",
+    },
     { "<leader>gl", "<cmd>lua require('gitsigns').blame_line()<cr>", desc = "Blame" },
     { "<leader>go", "<cmd>Telescope git_status<cr>", desc = "Open changed file" },
     { "<leader>gp", "<cmd>lua require('gitsigns').preview_hunk()<cr>", desc = "Preview Hunk" },
@@ -166,6 +184,68 @@ local mappings = {
     { "<leader>gs", "<cmd>lua require('gitsigns').stage_hunk()<cr>", desc = "Stage Hunk" },
     { "<leader>gu", "<cmd>lua require('gitsigns').undo_stage_hunk()<cr>", desc = "Undo Stage Hunk" },
     { "<leader>ggh", "<cmd>GBrowse<cr>", desc = "Open in GH" },
+
+    { "<leader>gm", group = "Merge Conflicts" },
+    { "<leader>gmm", "<cmd>DiffviewOpen<cr>", desc = "Open Merge Tool" },
+    { "<leader>gmc", "<cmd>DiffviewClose<cr>", desc = "Close Merge Tool" },
+    { "<leader>gmf", function() require("diffview.actions").toggle_files() end, desc = "Toggle Files" },
+
+    {
+      "<leader>gmo",
+      function()
+        require("diffview.actions").conflict_choose("ours")()
+      end,
+      desc = "Choose OURS",
+    },
+
+    {
+      "<leader>gmt",
+      function()
+        require("diffview.actions").conflict_choose("theirs")()
+      end,
+      desc = "Choose THEIRS",
+    },
+
+    {
+      "<leader>gmb",
+      function()
+        require("diffview.actions").conflict_choose("base")()
+      end,
+      desc = "Choose BASE",
+    },
+
+    {
+      "<leader>gma",
+      function()
+        require("diffview.actions").conflict_choose_all("all")()
+      end,
+      desc = "Choose ALL",
+    },
+
+    {
+      "<leader>gmd",
+      function()
+        require("diffview.actions").conflict_choose("none")()
+      end,
+      desc = "Choose NONE",
+    },
+
+    {
+      "<leader>gmn",
+      function()
+        require("diffview.actions").next_conflict()
+      end,
+      desc = "Next Conflict",
+    },
+
+    {
+      "<leader>gmp",
+      function()
+        require("diffview.actions").prev_conflict()
+      end,
+      desc = "Prev Conflict",
+    },
+
 
     { "<leader>h", "<cmd>nohlsearch<CR>", desc = "No Highlight" },
 
@@ -213,16 +293,6 @@ local mappings = {
     { "<leader>sb", "<cmd>Telescope buffers<cr>", desc = "Find" },
 
     { "<leader>t", group = "Tests" },
-    { "<leader>tL", '<cmd>Neotest run last strategy="dap"<cr>', desc = "Debug last" },
-    { "<leader>tO", "<cmd>Neotest output<cr>", desc = "Output" },
-    { "<leader>ta", "<cmd>Neotest attach<cr>", desc = "Attach to nearest" },
-    { "<leader>td", '<cmd>Neotest run strategy="dap"<cr>', desc = "Debug nearest" },
-    { "<leader>tf", "<cmd>Neotest run file<cr>", desc = "Run file" },
-    { "<leader>tl", "<cmd>Neotest run last<cr>", desc = "Run last" },
-    { "<leader>tn", "<cmd>Neotest run<cr>", desc = "Run nearest" },
-    { "<leader>to", "<cmd>Neotest output-panel<cr>", desc = "Output panel" },
-    { "<leader>ts", "<cmd>Neotest stop<cr>", desc = "Stop nearest" },
-    { "<leader>tt", "<cmd>Neotest summary<cr>", desc = "Toggle summary" },
 
     { "<leader>u", "<cmd>UndotreeToggle<cr>", desc = "UndoTree" },
     {

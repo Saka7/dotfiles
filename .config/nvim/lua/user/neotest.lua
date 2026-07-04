@@ -16,4 +16,3 @@ require('neotest').setup({
     }),
   }
 })
-

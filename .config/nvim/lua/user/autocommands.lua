@@ -1,37 +1,85 @@
-vim.cmd [[
-  augroup _general_settings
-    autocmd!
-    autocmd FileType qf,help,man,lspinfo nnoremap <silent> <buffer> q :close<CR> 
-    autocmd TextYankPost * silent!lua vim.highlight.on_yank({higroup = 'Visual', timeout = 200}) 
-    autocmd BufWinEnter * :set formatoptions-=cro
-    autocmd FileType qf set nobuflisted
-  augroup end
+local function augroup(name)
+  return vim.api.nvim_create_augroup(name, { clear = true })
+end
 
-  augroup _git
-    autocmd!
-    autocmd FileType gitcommit setlocal wrap
-    autocmd FileType gitcommit setlocal spell
-  augroup end
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("_general_settings"),
+  pattern = { "qf", "help", "man", "lspinfo" },
+  callback = function(ev)
+    vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = ev.buf, silent = true })
+  end,
+})
 
-  augroup _markdown
-    autocmd!
-    autocmd FileType markdown setlocal wrap
-    autocmd FileType markdown setlocal spell
-  augroup end
+vim.api.nvim_create_autocmd("TextYankPost", {
+  group = augroup("_highlight_yank"),
+  callback = function()
+    local on_yank = vim.hl and vim.hl.on_yank or vim.highlight.on_yank
+    on_yank({ higroup = "Visual", timeout = 200 })
+  end,
+})
 
-  augroup _auto_resize
-    autocmd!
-    autocmd VimResized * tabdo wincmd = 
-  augroup end
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  group = augroup("_format_options"),
+  callback = function()
+    vim.opt_local.formatoptions:remove({ "c", "r", "o" })
+  end,
+})
 
-  augroup _alpha
-    autocmd!
-    autocmd User AlphaReady set showtabline=0 | autocmd BufUnload <buffer> set showtabline=2
-  augroup end
-  augroup _csvview
-    autocmd!
-    autocmd BufReadPost,BufNewFile *.csv silent! CsvViewEnable
-    autocmd FileType csv silent! CsvViewEnable
-  augroup end
-]]
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("_quickfix_settings"),
+  pattern = "qf",
+  callback = function()
+    vim.opt_local.buflisted = false
+  end,
+})
 
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("_git"),
+  pattern = "gitcommit",
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.spell = true
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  group = augroup("_handlebars"),
+  pattern = { "*.hbs", "*.handlebars", "*.mustache" },
+  callback = function()
+    vim.bo.filetype = "html.handlebars"
+  end,
+})
+
+vim.api.nvim_create_autocmd("VimResized", {
+  group = augroup("_auto_resize"),
+  command = "tabdo wincmd =",
+})
+
+vim.api.nvim_create_autocmd("User", {
+  group = augroup("_alpha"),
+  pattern = "AlphaReady",
+  callback = function(ev)
+    vim.opt.showtabline = 0
+    vim.api.nvim_create_autocmd("BufUnload", {
+      buffer = ev.buf,
+      once = true,
+      callback = function()
+        vim.opt.showtabline = 2
+      end,
+    })
+  end,
+})
+
+local csv_group = augroup("_csvview")
+
+vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+  group = csv_group,
+  pattern = "*.csv",
+  command = "silent! CsvViewEnable",
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = csv_group,
+  pattern = "csv",
+  command = "silent! CsvViewEnable",
+})

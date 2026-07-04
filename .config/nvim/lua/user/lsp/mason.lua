@@ -1,4 +1,6 @@
-local servers = {
+local M = {}
+
+M.servers = {
 	"lua_ls",
 	"cssls",
 	"html",
@@ -25,14 +27,13 @@ local settings = {
 
 require("mason").setup(settings)
 require("mason-lspconfig").setup({
-	ensure_installed = servers,
-	automatic_installation = true,
+	ensure_installed = M.servers,
     automatic_enable = false,
 })
 
 local handlers = require("user.lsp.handlers")
 
-for _, server in pairs(servers) do
+for _, server in pairs(M.servers) do
 	local opts = {
 		on_attach = handlers.on_attach,
 		capabilities = handlers.capabilities,
@@ -48,3 +49,5 @@ for _, server in pairs(servers) do
 	vim.lsp.config[server] = opts
 	vim.lsp.enable(server)
 end
+
+return M

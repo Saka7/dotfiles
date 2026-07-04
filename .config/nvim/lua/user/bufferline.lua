@@ -7,7 +7,6 @@ bufferline.setup {
     right_mouse_command = "bdelete! %d",
     left_mouse_command = "buffer %d",
     middle_mouse_command = nil,
-	  indicator_icon = nil,
     indicator = { style = "icon", icon = "▎"},
     buffer_close_icon = "",
     modified_icon = "●",
@@ -98,7 +97,7 @@ bufferline.setup {
       bg = { attribute = "bg", highlight = "Normal" },
     },
     indicator_selected = {
-      fg = { attribute = "fg", highlight = "LspDiagnosticsDefaultHint" },
+      fg = { attribute = "fg", highlight = "DiagnosticHint" },
       bg = { attribute = "bg", highlight = "Normal" },
     },
   },

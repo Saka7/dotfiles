@@ -44,8 +44,6 @@ require("nvim-dap-virtual-text").setup({
   enabled = false
 })
 
-require('nvim-dap-repl-highlights').setup()
-
 dap.adapters["pwa-node"] = {
   type = "server",
   host = "localhost",
@@ -59,63 +57,47 @@ dap.adapters["pwa-node"] = {
   }
 }
 
-dap.configurations.javascript = {
-  {
+local node_skip_files = { '<node_internals>/**/*.js', 'node_modules/**/*.js' }
+local ts_runtime_args = { '-r', 'ts-node/register', '--nolazy' }
+local pick_process = require('dap.utils').pick_process
+
+local function node_config(opts)
+  return vim.tbl_extend("force", {
     type = "pwa-node",
+    cwd = "${workspaceFolder}",
+    protocol = 'inspector',
+    console = 'integratedTerminal',
+    skipFiles = node_skip_files,
+    smartStep = true,
+  }, opts)
+end
+
+dap.configurations.javascript = {
+  node_config({
     request = "launch",
     name = "Launch file",
     program = "${file}",
-    cwd = "${workspaceFolder}",
     sourceMaps = true,
-    protocol = 'inspector',
-    console = 'integratedTerminal',
-    skipFiles = { '<node_internals>/**/*.js', 'node_modules/**/*.js' },
-    smartStep = true,
-  },
-  {
-    type = "pwa-node",
+  }),
+  node_config({
     request = "attach",
     name = "Attach",
-    processId = require('dap.utils').pick_process,
-    cwd = "${workspaceFolder}",
+    processId = pick_process,
     sourceMaps = true,
-    protocol = 'inspector',
-    console = 'integratedTerminal',
-    skipFiles = { '<node_internals>/**/*.js', 'node_modules/**/*.js' },
-    smartStep = true,
-  }
+  }),
 }
 
 dap.configurations.typescript = {
-  {
-    type = "pwa-node",
+  node_config({
     request = "launch",
     name = "Launch file",
     program = "${file}",
-    cwd = "${workspaceFolder}",
-    protocol = 'inspector',
-    console = 'integratedTerminal',
-    skipFiles = { '<node_internals>/**/*.js', 'node_modules/**/*.js' },
-    smartStep = true,
-    runtimeArgs = {
-      '-r', 'ts-node/register',
-      '--nolazy',
-    },
-  },
-  {
-    type = "pwa-node",
+    runtimeArgs = ts_runtime_args,
+  }),
+  node_config({
     request = "attach",
     name = "Attach",
-    processId = require('dap.utils').pick_process,
-    cwd = "${workspaceFolder}",
-    protocol = 'inspector',
-    console = 'integratedTerminal',
-    skipFiles = { '<node_internals>/**/*.js', 'node_modules/**/*.js' },
-    smartStep = true,
-    runtimeArgs = {
-      '-r', 'ts-node/register',
-      '--nolazy',
-    },
-  }
+    processId = pick_process,
+    runtimeArgs = ts_runtime_args,
+  }),
 }
-

@@ -1,12 +1,19 @@
 local M = {}
 
-require("user.lsp.mason")
+local mason = require("user.lsp.mason")
 require("user.lsp.handlers").setup()
 require("user.lsp.conform")
 
+if vim.fn.exists(":LspInfo") == 0 then
+  vim.api.nvim_create_user_command("LspInfo", function()
+    vim.cmd.checkhealth("vim.lsp")
+  end, { desc = "Alias to :checkhealth vim.lsp" })
+end
+
 function M.start_all()
   local started = {}
-  for server, _ in pairs(vim.lsp.config) do
+  for _, server in ipairs(mason.servers) do
+    server = vim.split(server, "@")[1]
     local ok = pcall(vim.lsp.enable, server)
     if ok then
       table.insert(started, server)
@@ -20,13 +27,15 @@ function M.start_all()
 end
 
 function M.stop_all()
-  local clients = vim.lsp.get_active_clients()
+  local clients = vim.lsp.get_clients()
   if #clients == 0 then
     print("No active LSP clients")
     return
   end
   for _, client in pairs(clients) do
-    pcall(vim.lsp.stop_client, client.id)
+    pcall(function()
+      client:stop()
+    end)
   end
   print("Stopped all LSP clients")
 end
