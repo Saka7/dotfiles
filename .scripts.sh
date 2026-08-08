@@ -1,11 +1,17 @@
-function ssh_agent_start {
-    if [ -n "${SSH_AGENT_PID}" ]; then
-      ssh-agent -k > /dev/null
-    fi
+function frg {
+  local result=`rg --ignore-case --color=always --line-number --no-heading "$@" |
+    fzf --ansi \
+        --color 'hl:-1:underline,hl+:-1:underline:reverse' \
+        --delimiter ':' \
+        --preview "bat --color=always {1} --theme='Visual Studio Dark+' --highlight-line {2}" \
+        --preview-window 'up,60%,border-bottom,+{2}+3/3,~3'`
 
-    keychain --quiet ~/.ssh/google_compute_engine
-    keychain --quiet ~/.ssh/github_id_rsa
+  local file="${result%%:*}"
 
-    source ~/.keychain/`uname -n`-sh
+  local linenumber=`echo "${result}" | cut -d: -f2`
+
+  if [ ! -z "$file" ]; then
+    $EDITOR +"${linenumber}" "$file"
+  fi
 }
 
