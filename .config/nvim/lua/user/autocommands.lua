@@ -2,6 +2,14 @@ local function augroup(name)
   return vim.api.nvim_create_augroup(name, { clear = true })
 end
 
+vim.filetype.add({
+  extension = {
+    handlebars = "html.handlebars",
+    hbs = "html.handlebars",
+    mustache = "html.handlebars",
+  },
+})
+
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("_general_settings"),
   pattern = { "qf", "help", "man", "lspinfo" },
@@ -42,14 +50,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-  group = augroup("_handlebars"),
-  pattern = { "*.hbs", "*.handlebars", "*.mustache" },
-  callback = function()
-    vim.bo.filetype = "html.handlebars"
-  end,
-})
-
 vim.api.nvim_create_autocmd("VimResized", {
   group = augroup("_auto_resize"),
   command = "tabdo wincmd =",
@@ -70,16 +70,8 @@ vim.api.nvim_create_autocmd("User", {
   end,
 })
 
-local csv_group = augroup("_csvview")
-
-vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
-  group = csv_group,
-  pattern = "*.csv",
-  command = "silent! CsvViewEnable",
-})
-
 vim.api.nvim_create_autocmd("FileType", {
-  group = csv_group,
+  group = augroup("_csvview"),
   pattern = "csv",
   command = "silent! CsvViewEnable",
 })

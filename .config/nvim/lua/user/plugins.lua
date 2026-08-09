@@ -46,14 +46,6 @@ local plugins = {
   },
 
   {
-    "ahmedkhalf/project.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("user.project")
-    end,
-  },
-
-  {
     "goolord/alpha-nvim",
     cmd = "Alpha",
     event = "VimEnter",
@@ -66,7 +58,7 @@ local plugins = {
     "folke/which-key.nvim",
     event = "VeryLazy",
     config = function()
-      require("user.whichkey")
+      require("user.whichkey").setup()
     end,
   },
 
@@ -104,14 +96,6 @@ local plugins = {
     event = "VeryLazy",
     config = function()
       require("user.hlslens")
-    end,
-  },
-
-  {
-    "numToStr/Comment.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("user.comment")
     end,
   },
 
@@ -165,7 +149,7 @@ local plugins = {
     "lewis6991/gitsigns.nvim",
     lazy = false,
     config = function()
-      require("user.gitsigns")
+      require("user.vcs.gitsigns")
     end,
   },
 
@@ -180,7 +164,7 @@ local plugins = {
     cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory", "DiffviewToggleFiles" },
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
-      require("user.diffview")
+      require("user.vcs.diffview")
     end,
   },
 
@@ -201,7 +185,6 @@ local plugins = {
       "williamboman/mason-lspconfig.nvim",
       "hrsh7th/cmp-nvim-lsp",
       "stevearc/conform.nvim",
-      "RRethy/vim-illuminate",
     },
     config = function()
       require("user.lsp")
@@ -219,13 +202,9 @@ local plugins = {
     end,
   },
 
-  { "RRethy/vim-illuminate", lazy = true },
-
   {
     "Wansmer/treesj",
-    keys = {
-      { "<leader>lt", function() require("treesj").toggle() end, desc = "Split/Join" },
-    },
+    lazy = true,
     config = function()
       require("user.treesj")
     end,
@@ -258,18 +237,6 @@ local plugins = {
     "nvim-neotest/neotest",
     lazy = true,
     cmd = "Neotest",
-    keys = {
-      { "<leader>tL", '<cmd>Neotest run last strategy="dap"<cr>', desc = "Debug last" },
-      { "<leader>tO", "<cmd>Neotest output<cr>", desc = "Output" },
-      { "<leader>ta", "<cmd>Neotest attach<cr>", desc = "Attach to nearest" },
-      { "<leader>td", '<cmd>Neotest run strategy="dap"<cr>', desc = "Debug nearest" },
-      { "<leader>tf", "<cmd>Neotest run file<cr>", desc = "Run file" },
-      { "<leader>tl", "<cmd>Neotest run last<cr>", desc = "Run last" },
-      { "<leader>tn", "<cmd>Neotest run<cr>", desc = "Run nearest" },
-      { "<leader>to", "<cmd>Neotest output-panel<cr>", desc = "Output panel" },
-      { "<leader>ts", "<cmd>Neotest stop<cr>", desc = "Stop nearest" },
-      { "<leader>tt", "<cmd>Neotest summary<cr>", desc = "Toggle summary" },
-    },
     dependencies = {
       "nvim-neotest/nvim-nio",
       "nvim-lua/plenary.nvim",
@@ -307,10 +274,8 @@ local plugins = {
 
   {
     "mfussenegger/nvim-dap",
-    keys = {
-      { "<leader>dt", function() require("dap").toggle_breakpoint() end, desc = "Toggle Breakpoint" },
-      { "<leader>dc", function() require("dap").continue() end, desc = "Continue" },
-    },
+    lazy = true,
+    cmd = "DapClearBreakpoints",
     dependencies = {
       "microsoft/vscode-js-debug",
       "rcarriga/nvim-dap-ui",
@@ -322,28 +287,36 @@ local plugins = {
   },
 
   { "rcarriga/nvim-dap-ui", lazy = true, dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"} },
-  { 'theHamsta/nvim-dap-virtual-text', lazy = true },
+  { 'theHamsta/nvim-dap-virtual-text', lazy = true, cmd = "DapVirtualTextToggle" },
 
   { "hat0uma/csvview.nvim", ft = "csv", cmd = "CsvViewEnable" },
 
   {
     "folke/sidekick.nvim",
-    keys = {
-      { "<c-.>", function() require("sidekick.cli").focus() end, desc = "Sidekick Focus", mode = { "n", "t", "i", "x" } },
-    },
+    lazy = true,
     config = function()
       require("user.sidekick")
     end,
   },
 
   {
-    "LunarVim/bigfile.nvim",
+    "folke/snacks.nvim",
     lazy = false,
-    priority = 900,
-    config = function()
-      require("user.bigfile")
-    end,
+    priority = 1000,
+    opts = {
+      bigfile = {
+        enabled = true,
+        size = 5 * 1024 * 1024,
+      },
+      words = {
+        enabled = true,
+      },
+    },
   }
 }
 
-require("lazy").setup(plugins)
+require("lazy").setup(plugins, {
+  rocks = {
+    enabled = false,
+  },
+})

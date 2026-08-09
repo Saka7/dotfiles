@@ -1,4 +1,26 @@
-local which_key = require("which-key")
+local M = {}
+
+local function buffer_map(mode, lhs, rhs, bufnr, desc)
+  vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, silent = true, desc = desc })
+end
+
+function M.lsp_keymaps(bufnr)
+  buffer_map("n", "gD", vim.lsp.buf.declaration, bufnr, "Go to declaration")
+  buffer_map("n", "gd", vim.lsp.buf.definition, bufnr, "Go to definition")
+  buffer_map("n", "K", vim.lsp.buf.hover, bufnr, "Hover documentation")
+  buffer_map("n", "gI", vim.lsp.buf.implementation, bufnr, "Go to implementation")
+  buffer_map("n", "gr", vim.lsp.buf.references, bufnr, "List references")
+  buffer_map("n", "gl", vim.diagnostic.open_float, bufnr, "Line diagnostics")
+end
+
+function M.terminal_keymaps(bufnr)
+  buffer_map("t", "<esc>", [[<C-\><C-n>]], bufnr, "Terminal normal mode")
+  buffer_map("t", "jk", [[<C-\><C-n>]], bufnr, "Terminal normal mode")
+  buffer_map("t", "<C-h>", [[<C-\><C-n><C-W>h]], bufnr, "Go to left window")
+  buffer_map("t", "<C-j>", [[<C-\><C-n><C-W>j]], bufnr, "Go to lower window")
+  buffer_map("t", "<C-k>", [[<C-\><C-n><C-W>k]], bufnr, "Go to upper window")
+  buffer_map("t", "<C-l>", [[<C-\><C-n><C-W>l]], bufnr, "Go to right window")
+end
 
 local config = {
   plugins = {
@@ -34,8 +56,6 @@ local mappings = {
     silent = true,
     noremap = true,
     nowait = true,
-
-    { "<leader>/", "<Plug>(comment_toggle_linewise_current)", desc = "Comment toggle" },
 
     { "<leader>;", "<cmd>Alpha<cr>" },
     {
@@ -103,17 +123,20 @@ local mappings = {
     { "<leader>F", group = "Folds" },
     { "<leader>Fc", "<cmd>lua require('ufo').closeAllFolds()<cr>", desc = "Close All" },
     { "<leader>Fo", "<cmd>lua require('ufo').openAllFolds()<cr>", desc = "Open All" },
+    { "zM", function() require("ufo").closeAllFolds() end, desc = "Close all folds" },
+    { "zR", function() require("ufo").openAllFolds() end, desc = "Open all folds" },
+    { "zm", function() require("ufo").closeFoldsWith() end, desc = "Close folds with" },
+    { "zr", function() require("ufo").openFoldsExceptKinds() end, desc = "Open folds except kinds" },
 
     {
       "<leader>P",
-      function()
-        require("telescope").extensions.projects.projects()
-      end,
-      desc = "Projects",
+      "<cmd>AutoSession search<cr>",
+      desc = "Sessions",
     },
 
     { "<leader>T", "<cmd>term<cr>", desc = "Terminal new tab" },
     { "<leader>\\", "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" },
+    { "<c-\\>", "<cmd>ToggleTerm<cr>", desc = "Toggle terminal", mode = { "n", "i", "t" } },
 
     { "<leader>b", group = "Buffers" },
     { "<leader>bD", "<cmd>BufferLineSortByDirectory<cr>", desc = "Sort by directory" },
@@ -155,6 +178,28 @@ local mappings = {
     },
 
     { "<leader>g", group = "Git" },
+    {
+      "]c",
+      function()
+        if vim.wo.diff then
+          vim.cmd.normal({ "]c", bang = true })
+        else
+          require("gitsigns").nav_hunk("next", { navigation_message = false })
+        end
+      end,
+      desc = "Next git hunk",
+    },
+    {
+      "[c",
+      function()
+        if vim.wo.diff then
+          vim.cmd.normal({ "[c", bang = true })
+        else
+          require("gitsigns").nav_hunk("prev", { navigation_message = false })
+        end
+      end,
+      desc = "Previous git hunk",
+    },
     { "<leader>gC", "<cmd>Telescope git_bcommits<cr>" },
     { "<leader>gL", "<cmd>G blame<cr>", desc = "Toggle Blame" },
     { "<leader>gR", "<cmd>lua require 'gitsigns'.reset_buffer()<cr>", desc = "Reset Buffer" },
@@ -189,6 +234,45 @@ local mappings = {
     { "<leader>gmm", "<cmd>DiffviewOpen<cr>", desc = "Open Merge Tool" },
     { "<leader>gmc", "<cmd>DiffviewClose<cr>", desc = "Close Merge Tool" },
     { "<leader>gmf", function() require("diffview.actions").toggle_files() end, desc = "Toggle Files" },
+
+    {
+      "gmT",
+      function()
+        require("diffview.actions").conflict_choose_all("theirs")()
+      end,
+      desc = "Choose THEIRS ALL",
+    },
+
+    {
+      "gmO",
+      function()
+        require("diffview.actions").conflict_choose_all("ours")()
+      end,
+      desc = "Choose OURS ALL",
+    },
+
+    {
+      "gmP",
+      function()
+        vim.cmd.update()
+        local file = vim.fn.shellescape(vim.fn.expand("%:p"))
+        vim.cmd("!mergiraf solve --stdout " .. file)
+      end,
+      desc = "Preview Mergiraf Solution",
+    },
+
+    {
+      "gmM",
+      function()
+        vim.cmd.update()
+        local file = vim.fn.shellescape(vim.fn.expand("%:p"))
+        vim.cmd("!mergiraf solve " .. file)
+        if vim.v.shell_error == 0 then
+          vim.cmd.edit({ bang = true })
+        end
+      end,
+      desc = "Solve with Mergiraf",
+    },
 
     {
       "<leader>gmo",
@@ -293,11 +377,20 @@ local mappings = {
     { "<leader>sb", "<cmd>Telescope buffers<cr>", desc = "Find" },
 
     { "<leader>t", group = "Tests" },
+    { "<leader>tL", '<cmd>Neotest run last strategy="dap"<cr>', desc = "Debug last" },
+    { "<leader>tO", "<cmd>Neotest output<cr>", desc = "Output" },
+    { "<leader>ta", "<cmd>Neotest attach<cr>", desc = "Attach to nearest" },
+    { "<leader>td", '<cmd>Neotest run strategy="dap"<cr>', desc = "Debug nearest" },
+    { "<leader>tf", "<cmd>Neotest run file<cr>", desc = "Run file" },
+    { "<leader>tl", "<cmd>Neotest run last<cr>", desc = "Run last" },
+    { "<leader>tn", "<cmd>Neotest run<cr>", desc = "Run nearest" },
+    { "<leader>to", "<cmd>Neotest output-panel<cr>", desc = "Output panel" },
+    { "<leader>ts", "<cmd>Neotest stop<cr>", desc = "Stop nearest" },
+    { "<leader>tt", "<cmd>Neotest summary<cr>", desc = "Toggle summary" },
 
     { "<leader>u", "<cmd>UndotreeToggle<cr>", desc = "UndoTree" },
     {
       mode = { "v" },
-      { "<leader>/", "<Plug>(comment_toggle_linewise_visual)", desc = "Comment" },
       { "<leader>f", "<cmd>lua require('conform').format({ timeout_ms = 2000 })<cr>", desc = "Format" },
       {
         "<leader>s", "<cmd>lua require('telescope.builtin').grep_string({ default_text = vim.fn.getreg('\"') })<cr>",
@@ -307,5 +400,10 @@ local mappings = {
   }
 }
 
-which_key.setup(config)
-which_key.add(mappings)
+function M.setup()
+  local which_key = require("which-key")
+  which_key.setup(config)
+  which_key.add(mappings)
+end
+
+return M

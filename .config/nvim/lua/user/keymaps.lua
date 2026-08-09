@@ -25,42 +25,6 @@ map("n", "<C-Right>", ":vertical resize +2<CR>", "Increase window width")
 map("n", "<S-l>", ":bnext<CR>", "Next buffer")
 map("n", "<S-h>", ":bprevious<CR>", "Previous buffer")
 
--- Git hunk navigation
-map("n", "]c", function()
-  if vim.wo.diff then
-    vim.cmd.normal({ "]c", bang = true })
-  else
-    require("gitsigns").nav_hunk("next", { navigation_message = false })
-  end
-end, "Next git hunk")
-map("n", "[c", function()
-  if vim.wo.diff then
-    vim.cmd.normal({ "[c", bang = true })
-  else
-    require("gitsigns").nav_hunk("prev", { navigation_message = false })
-  end
-end, "Previous git hunk")
-map("n", "<leader>gj", function()
-  require("gitsigns").nav_hunk("next", { navigation_message = false })
-end, "Next git hunk")
-map("n", "<leader>gk", function()
-  require("gitsigns").nav_hunk("prev", { navigation_message = false })
-end, "Previous git hunk")
-
--- Keep ufo's fold state stable when using standard fold commands.
-map("n", "zR", function()
-  require("ufo").openAllFolds()
-end, "Open all folds")
-map("n", "zM", function()
-  require("ufo").closeAllFolds()
-end, "Close all folds")
-map("n", "zr", function()
-  require("ufo").openFoldsExceptKinds()
-end, "Open folds except kinds")
-map("n", "zm", function()
-  require("ufo").closeFoldsWith()
-end, "Close folds with")
-
 -- Move text up and down
 map("n", "<A-j>", "<Esc>:m .+1<CR>==gi", "Move line down")
 map("n", "<A-k>", "<Esc>:m .-2<CR>==gi", "Move line up")

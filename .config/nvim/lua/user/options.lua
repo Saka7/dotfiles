@@ -32,6 +32,18 @@ local options = {
   wrap = true,
   linebreak = true,
   scrolloff = 8,
+  sessionoptions = {
+    "blank",
+    "buffers",
+    "curdir",
+    "folds",
+    "help",
+    "tabpages",
+    "winsize",
+    "winpos",
+    "terminal",
+    "localoptions",
+  },
   sidescrolloff = 8,
   -- Use a Nerd Font so icon glyphs from devicons, bufferline, and lualine render correctly in GUI clients.
   guifont = "DroidSansM Nerd Font:h17",
