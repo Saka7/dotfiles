@@ -254,6 +254,7 @@ local plugins = {
     cmd = "Telescope",
     dependencies = {
       "nvim-lua/plenary.nvim",
+      "jmacadie/telescope-hierarchy.nvim",
       "nvim-telescope/telescope-live-grep-args.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     },
@@ -290,14 +291,6 @@ local plugins = {
   { 'theHamsta/nvim-dap-virtual-text', lazy = true, cmd = "DapVirtualTextToggle" },
 
   { "hat0uma/csvview.nvim", ft = "csv", cmd = "CsvViewEnable" },
-
-  {
-    "folke/sidekick.nvim",
-    lazy = true,
-    config = function()
-      require("user.sidekick")
-    end,
-  },
 
   {
     "folke/snacks.nvim",

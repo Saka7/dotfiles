@@ -8,8 +8,9 @@ telescope.setup {
     layout_strategy = 'vertical',
     layout_config = {
       width = 0.95,
-      prompt_position = "top",
-      mirror = true,
+      height = 0.95,
+      prompt_position = "bottom",
+      mirror = false,
     },
     vimgrep_arguments = {
       "rg",
@@ -105,6 +106,11 @@ telescope.setup {
     },
   },
   extensions = {
+    hierarchy = {
+      initial_multi_expand = true,
+      multi_depth = 5,
+      layout_strategy = "vertical",
+    },
     live_grep_args = {
       auto_quoting = true,
     },
@@ -118,4 +124,5 @@ telescope.setup {
 }
 
 pcall(telescope.load_extension, "fzf")
+pcall(telescope.load_extension, "hierarchy")
 pcall(telescope.load_extension, "live_grep_args")

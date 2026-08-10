@@ -58,66 +58,36 @@ local mappings = {
     nowait = true,
 
     { "<leader>;", "<cmd>Alpha<cr>" },
-    {
-      "<c-.>",
-      "<cmd>lua require('sidekick.cli').focus()<cr>",
-      desc = "Sidekick Focus",
-      mode = { "n", "t", "i", "x" },
-    },
 
-    { "<leader>a", group = "AI" },
-    {
-      "<leader>aa",
-      function()
-        require("sidekick.cli").toggle({
-          name = "copilot",
-          focus = true,
-        })
-      end,
-      desc = "Sidekick Toggle CLI",
-    },
-    {
-      "<leader>ad",
-      "<cmd>lua require('sidekick.cli').close()<cr>",
-      desc = "Detach a CLI Session",
-    },
+    { "<leader>a", group = "Agent Context" },
     {
       "<leader>at",
       function()
-        require("sidekick.cli").send({
-          msg = '{this}',
-          name = "copilot",
-        })
+        require("user.agent_context").copy_selection()
       end,
-      mode = { "x", "n" },
-      desc = "Send This",
+      mode = { "x" },
+      desc = "Copy Selection Context",
     },
     {
       "<leader>af",
       function()
-        require("sidekick.cli").send({
-          msg = '{file}',
-          name = "copilot",
-        })
+        require("user.agent_context").copy_file()
       end,
-      desc = "Send File",
+      desc = "Copy File Context",
     },
     {
-      "<leader>av",
+      "<leader>ab",
       function()
-        require("sidekick.cli").send({
-          msg = '{selection}',
-          name = "copilot",
-        })
+        require("user.agent_context").copy_buffers()
       end,
-      mode = { "x" },
-      desc = "Send Visual Selection",
+      desc = "Copy Buffer Context",
     },
     {
-      "<leader>ap",
-      "<cmd>lua require('sidekick.cli').prompt()<cr>",
-      mode = { "n", "x" },
-      desc = "Sidekick Select Prompt",
+      "<leader>aB",
+      function()
+        require("user.agent_context").select_buffers()
+      end,
+      desc = "Select Buffer Context",
     },
 
     { "<leader>F", group = "Folds" },
@@ -201,7 +171,7 @@ local mappings = {
       desc = "Previous git hunk",
     },
     { "<leader>gC", "<cmd>Telescope git_bcommits<cr>" },
-    { "<leader>gL", "<cmd>G blame<cr>", desc = "Toggle Blame" },
+    { "<leader>gL", "<cmd>G blame --date=relative<cr>", desc = "Toggle Blame" },
     { "<leader>gR", "<cmd>lua require 'gitsigns'.reset_buffer()<cr>", desc = "Reset Buffer" },
     { "<leader>gH", "<cmd>DiffviewFileHistory %<cr>", desc = "File History" },
     { "<leader>gO", "<cmd>DiffviewOpen<cr>", desc = "Diff View" },
@@ -341,7 +311,9 @@ local mappings = {
     { "<leader>lD", "<cmd>lua require('user.lsp').stop_all()<cr>", desc = "Disable all LSP" },
     { "<leader>lLS", "<cmd>lua require('user.lsp').start_all()<cr>", desc = "Enable all LSP" },
     { "<leader>le", "<cmd>Telescope quickfix<cr>", desc = "Telescope Quickfix" },
+    { "<leader>li", "<cmd>Telescope hierarchy incoming_calls<cr>", desc = "Incoming Calls" },
     { "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Document Symbols" },
+    { "<leader>lo", "<cmd>Telescope hierarchy outgoing_calls<cr>", desc = "Outgoing Calls" },
     { "<leader>lt", "<cmd>lua require('treesj').toggle()<cr>", desc = "Split/Join" },
     { "<leader>lj", "<cmd>lua vim.diagnostic.jump({count=1, float=true})<cr>", desc = "Next" },
     { "<leader>lk", "<cmd>lua vim.diagnostic.jump({count=-1, float=true})<cr>", desc = "Prev" },
@@ -353,9 +325,8 @@ local mappings = {
 
     { "<leader>s", group = "Search" },
     { "<leader>sC", "<cmd>Telescope commands<cr>", desc = "Commands" },
-    { "<leader>sR", "<cmd>Telescope registers<cr>", desc = "Registers" },
     {
-      "<leader>st",
+      "<leader>sT",
       function()
         require('telescope').extensions.live_grep_args.live_grep_args({
           additional_args = {'-g','!tests','-tts','-tjs', '-F'}
@@ -363,9 +334,9 @@ local mappings = {
       end,
       desc = "Text Args (Selected)",
     },
-    { "<leader>sT", "<cmd>Telescope live_grep<cr>", desc = "Text" },
+    { "<leader>st", "<cmd>Telescope live_grep<cr>", desc = "Text" },
     {
-      "<leader>sTT",
+      "<leader>sgt",
       "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args({})<cr>",
       desc = "Text Args (Full)",
     },
