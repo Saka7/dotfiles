@@ -2,7 +2,6 @@ local M = {}
 
 local mason = require("user.lsp.mason")
 require("user.lsp.handlers").setup()
-require("user.lsp.conform")
 
 if vim.fn.exists(":LspInfo") == 0 then
   vim.api.nvim_create_user_command("LspInfo", function()

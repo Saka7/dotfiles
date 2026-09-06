@@ -9,7 +9,15 @@ M.servers = {
 	"bashls",
 	"jsonls",
 	"yamlls",
-  "copilot"
+}
+
+M.tools = {
+	"eslint_d",
+	"prettier",
+	"ruff",
+	"shfmt",
+	"sql-formatter",
+	"stylua",
 }
 
 local settings = {
@@ -28,7 +36,10 @@ local settings = {
 require("mason").setup(settings)
 require("mason-lspconfig").setup({
 	ensure_installed = M.servers,
-    automatic_enable = false,
+	automatic_enable = false,
+})
+require("mason-tool-installer").setup({
+	ensure_installed = M.tools,
 })
 
 local handlers = require("user.lsp.handlers")

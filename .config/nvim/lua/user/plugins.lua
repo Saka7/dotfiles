@@ -183,8 +183,8 @@ local plugins = {
     dependencies = {
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
+      "WhoIsSethDaniel/mason-tool-installer.nvim",
       "hrsh7th/cmp-nvim-lsp",
-      "stevearc/conform.nvim",
     },
     config = function()
       require("user.lsp")
@@ -193,12 +193,21 @@ local plugins = {
 
   { "williamboman/mason.nvim", lazy = true },
   { "williamboman/mason-lspconfig.nvim", lazy = true },
+  { "WhoIsSethDaniel/mason-tool-installer.nvim", lazy = true },
 
   {
     "stevearc/conform.nvim",
-    lazy = true,
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
       require("user.lsp.conform")
+    end,
+  },
+
+  {
+    "mfussenegger/nvim-lint",
+    event = { "BufReadPre", "BufNewFile" },
+    config = function()
+      require("user.lsp.lint")
     end,
   },
 

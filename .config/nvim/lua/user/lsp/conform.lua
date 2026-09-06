@@ -9,16 +9,24 @@ conform.setup({
 		json = { "prettier" },
 		jsonc = { "prettier" },
 		html = { "prettier" },
+		["html.handlebars"] = { "prettier" },
 		css = { "prettier" },
 		scss = { "prettier" },
 		markdown = { "prettier" },
 		yaml = { "prettier" },
+		python = { "ruff_format" },
 		lua = { "stylua" },
 		sh = { "shfmt" },
 		bash = { "shfmt" },
 		sql = { "sql_formatter" },
 	},
+	default_format_opts = {
+		lsp_format = "fallback",
+	},
 	format_on_save = false,
+	log_level = vim.log.levels.ERROR,
+	notify_on_error = true,
+	notify_no_formatters = true,
 	formatters = {
 		prettier = {
 			append_args = function(_, ctx)

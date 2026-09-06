@@ -171,7 +171,20 @@ local mappings = {
       desc = "Previous git hunk",
     },
     { "<leader>gC", "<cmd>Telescope git_bcommits<cr>" },
-    { "<leader>gL", "<cmd>G blame --date=relative<cr>", desc = "Toggle Blame" },
+    {
+      "<leader>gD",
+      function()
+        require("diffview.actions").open_in_diffview()
+      end,
+      desc = "Open Commit Diff",
+    },
+    {
+      "<leader>gL",
+      function()
+        require("gitsigns").blame()
+      end,
+      desc = "Blame File",
+    },
     { "<leader>gR", "<cmd>lua require 'gitsigns'.reset_buffer()<cr>", desc = "Reset Buffer" },
     { "<leader>gH", "<cmd>DiffviewFileHistory %<cr>", desc = "File History" },
     { "<leader>gO", "<cmd>DiffviewOpen<cr>", desc = "Diff View" },
@@ -345,6 +358,22 @@ local mappings = {
     { "<leader>sf", "<cmd>Telescope find_files<cr>", desc = "Find File" },
     { "<leader>sr", "<cmd>Telescope oldfiles<cr>", desc = "Open Recent File" },
     { "<leader>sl", "<cmd>Telescope resume<cr>", desc = "Last Search" },
+    {
+      "<leader>sm",
+      function()
+        local make_entry = require("telescope.make_entry").gen_from_marks({})
+
+        require("telescope.builtin").marks({
+          prompt_title = "User Marks",
+          entry_maker = function(item)
+            if item.line:sub(1, 1):match("[A-Za-z]") then
+              return make_entry(item)
+            end
+          end,
+        })
+      end,
+      desc = "Marks",
+    },
     { "<leader>sb", "<cmd>Telescope buffers<cr>", desc = "Find" },
 
     { "<leader>t", group = "Tests" },
@@ -363,6 +392,7 @@ local mappings = {
     {
       mode = { "v" },
       { "<leader>f", "<cmd>lua require('conform').format({ timeout_ms = 2000 })<cr>", desc = "Format" },
+      { "<leader>gH", "<cmd>'<,'>DiffviewFileHistory<cr>", desc = "Line History" },
       {
         "<leader>s", "<cmd>lua require('telescope.builtin').grep_string({ default_text = vim.fn.getreg('\"') })<cr>",
         desc = "Search"
