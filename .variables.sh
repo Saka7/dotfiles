@@ -1,9 +1,13 @@
 #!/usr/bin/zsh
 
+alias vi='nvim'
+
 export DISABLE_MAGIC_FUNCTIONS=true
 export ZSH_THEME="laconic"
 export ZSH="$HOME/.oh-my-zsh"
+
 export PATH=~/.local/bin:$PATH
-export NPMRC_PATH=$HOME/Documents/.npmrc
-export EDITOR='vim'
+export EDITOR='nvim'
+
 export BAT_THEME="TwoDark"
+
