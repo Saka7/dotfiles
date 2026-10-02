@@ -2,29 +2,35 @@
 # Author saka7
 # Year 2016
 
-NEWLINE=$'\n'
+local COLOR_GOLD='#E5C07B'
+local COLOR_BLUE='#61AFEF'
+local COLOR_RED='#E06C75'
+local COLOR_GREEN='#98C379'
+local COLOR_FRAME='#5C6370'
+local COLOR_COMMENT='#7F848E'
+local COLOR_RESET='%f'
 
-function error_symbol() {
-    echo "%{$fg_bold[red]%}$1"
-}
-
-function success_symbol() {
-    echo "%{$fg_bold[green]%}$1"
-}
+local SYMBOL_TOP='┌'
+local SYMBOL_BOTTOM='└'
+local SYMBOL_ARROW='❯'
+local SYMBOL_SEPARATOR='·'
+local SYMBOL_DIRTY='•'
+local NEWLINE=$'\n'
 
 local GIT_INFO='$(git_prompt_info)'
-ZSH_THEME_GIT_PROMPT_PREFIX=" | %{$fg_bold[cyan]%}"
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%} •"
+ZSH_THEME_GIT_PROMPT_PREFIX=" %F{${COLOR_FRAME}}${SYMBOL_SEPARATOR}${COLOR_RESET} %F{${COLOR_BLUE}}"
+ZSH_THEME_GIT_PROMPT_SUFFIX="$COLOR_RESET"
+ZSH_THEME_GIT_PROMPT_DIRTY="%F{${COLOR_RED}} ${SYMBOL_DIRTY}"
 
-local RETURN_STATUS="%(?:$(success_symbol)└➤ :$(error_symbol)└➤%{$reset_color%}"
-local LINE_JOINT="%(?:$(success_symbol)┌:$(error_symbol)┌)"
+local RETURN_STATUS="%F{${COLOR_FRAME}}${SYMBOL_BOTTOM}${COLOR_RESET}%(?:%F{${COLOR_GREEN}}:%F{${COLOR_RED}})${SYMBOL_ARROW}${COLOR_RESET}"
+local LINE_JOINT="%F{${COLOR_FRAME}}${SYMBOL_TOP}${COLOR_RESET}"
 
 if [[ $EUID -ne 0 ]]; then
-  local WORKING_DIR="$LINE_JOINT %{$fg_bold[yellow]%}%~%{$reset_color%}"
+  local WORKING_DIR="$LINE_JOINT %F{${COLOR_GOLD}}%3~${COLOR_RESET}"
 else
-  local WORKING_DIR="$LINE_JOINT %{$fg_bold[red]%}%~%{$reset_color%}"
+  local WORKING_DIR="$LINE_JOINT %F{${COLOR_RED}}%3~${COLOR_RESET}"
 fi
 
 PROMPT=" ${WORKING_DIR}${GIT_INFO}${NEWLINE} ${RETURN_STATUS} "
 
+ZSH_HIGHLIGHT_STYLES[comment]="fg=${COLOR_COMMENT}"
