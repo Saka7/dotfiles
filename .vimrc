@@ -2,7 +2,7 @@ syntax on
 filetype plugin indent on
 
 set number
-set paste
+set nopaste
 set tabstop=4 softtabstop=4
 set shiftwidth=4
 set noswapfile
@@ -13,28 +13,28 @@ set expandtab
 set nowrap
 set incsearch
 set mouse=a
+set lazyredraw
+set cursorline
+set incsearch
+set autoindent
+set scrolloff=5
+set sidescrolloff=5
+set splitbelow
+set splitright
+set wildmenu
+set showmatch
 
-call plug#begin('~/.vim/plugged')
-Plug 'tomasiser/vim-code-dark'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'jremmen/vim-ripgrep'
-Plug 'airblade/vim-gitgutter'
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'mbbill/undotree'
-call plug#end()
+colorscheme habamax
 
-colorscheme codedark
+let mapleader = " "
+vnoremap <leader>y :w !xclip -sel c<CR><CR>
+inoremap jj <Esc>
+nnoremap <leader>e :Lexplore<CR>
+nnoremap <leader>b :buffers<CR>
+nnoremap <leader>c :bd<CR>
+nnoremap <Tab> :bnext<CR>
+nnoremap <S-Tab> :bprevious<CR>
 
-set timeoutlen=300
-imap jj <Esc>
-map <C-S-c> :w !xclip -sel c <CR><CR>
-nnoremap <Space>f :Files <CR>
-nnoremap <Space>e :NERDTreeToggle <CR>
-nnoremap <Space>u :UndotreeToggle <CR>
 
-let g:airline_theme='raven'
-let g:gitgutter_async=0
+let g:netrw_winsize = 25
 
