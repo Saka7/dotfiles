@@ -1,44 +1,29 @@
-local configs = require("nvim-treesitter.configs")
-
-configs.setup({
-  ensure_installed = {
-    "bash",
-    "c",
-    "javascript",
-    "json",
-    "lua",
-    "python",
-    "typescript",
-    "tsx",
-    "css",
-    "yaml",
-    "dap_repl",
-  },
-	ignore_install = { "phpdoc" },
-	highlight = {
-		enable = true,
-	},
-	autopairs = {
-		enable = true,
-	},
-	indent = { enable = false },
-})
-
-vim.treesitter.query.set(
+local parsers = {
+  "bash",
+  "c",
+  "css",
+  "glimmer",
+  "html",
+  "javascript",
+  "json",
+  "lua",
   "markdown",
-  "injections",
-  [[
-(fenced_code_block
-  (info_string
-    (language) @injection.language)
-  (code_fence_content) @injection.content)
+  "markdown_inline",
+  "python",
+  "tsx",
+  "typescript",
+  "yaml",
+}
 
-((inline) @injection.content
-  (#set! injection.language "markdown_inline"))
+local treesitter = require("nvim-treesitter")
+treesitter.setup({ install_dir = vim.fn.stdpath("data") .. "/site" })
+treesitter.install(parsers)
 
-((pipe_table_cell) @injection.content
-  (#set! injection.language "markdown_inline"))
-]]
-)
-
-vim.treesitter.query.set("markdown_inline", "injections", "")
+vim.api.nvim_create_autocmd("FileType", {
+  callback = function(event)
+    local lang = vim.treesitter.language.get_lang(vim.bo[event.buf].filetype)
+    if lang and vim.treesitter.language.add(lang) then
+      vim.treesitter.start(event.buf, lang)
+    end
+  end,
+})

@@ -9,34 +9,23 @@ if vim.fn.exists(":LspInfo") == 0 then
   end, { desc = "Alias to :checkhealth vim.lsp" })
 end
 
-function M.start_all()
-  local started = {}
-  for _, server in ipairs(mason.servers) do
-    server = vim.split(server, "@")[1]
-    local ok = pcall(vim.lsp.enable, server)
-    if ok then
-      table.insert(started, server)
-    end
-  end
-  if #started == 0 then
-    print("No LSP servers started")
-  else
-    print("Started LSP servers: " .. table.concat(started, ", "))
-  end
+local function set_enabled(enabled)
+  local servers = vim.tbl_keys(mason.servers)
+  vim.lsp.enable(servers, enabled)
+  table.sort(servers)
+
+  local action = enabled and "Enabled" or "Disabled"
+  vim.notify(action .. " automatic LSP activation for: " .. table.concat(servers, ", "))
 end
 
-function M.stop_all()
-  local clients = vim.lsp.get_clients()
-  if #clients == 0 then
-    print("No active LSP clients")
-    return
-  end
-  for _, client in pairs(clients) do
-    pcall(function()
-      client:stop()
-    end)
-  end
-  print("Stopped all LSP clients")
+function M.enable_all()
+  set_enabled(true)
 end
+
+function M.disable_all()
+  set_enabled(false)
+end
+
+require("user.keymaps").setup_lsp()
 
 return M

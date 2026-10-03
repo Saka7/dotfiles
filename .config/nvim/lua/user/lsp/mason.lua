@@ -1,64 +1,60 @@
 local M = {}
 
 M.servers = {
-	"lua_ls",
-	"cssls",
-	"html",
-	"ts_ls",
-	"pyright",
-	"bashls",
-	"jsonls",
-	"yamlls",
+  lua_ls = "lua-language-server",
+  cssls = "css-lsp",
+  html = "html-lsp",
+  ts_ls = "typescript-language-server",
+  eslint = "eslint-lsp",
+  pyright = "pyright",
+  ruff = "ruff",
+  bashls = "bash-language-server",
+  jsonls = "json-lsp",
+  yamlls = "yaml-language-server",
 }
 
-M.tools = {
-	"eslint_d",
-	"prettier",
-	"ruff",
-	"shfmt",
-	"sql-formatter",
-	"stylua",
+M.packages = {
+  { "js-debug-adapter", version = "v1.140.0" },
+  "prettier",
+  "shfmt",
+  "sql-formatter",
+  "stylua",
 }
+
+local server_packages = vim.tbl_values(M.servers)
+table.sort(server_packages)
+vim.list_extend(M.packages, server_packages)
 
 local settings = {
-	ui = {
-		border = "none",
-		icons = {
-			package_installed = "◍",
-			package_pending = "◍",
-			package_uninstalled = "◍",
-		},
-	},
-	log_level = vim.log.levels.INFO,
-	max_concurrent_installers = 4,
+  ui = {
+    border = "none",
+  },
 }
 
 require("mason").setup(settings)
-require("mason-lspconfig").setup({
-	ensure_installed = M.servers,
-	automatic_enable = false,
-})
 require("mason-tool-installer").setup({
-	ensure_installed = M.tools,
+  ensure_installed = M.packages,
+  auto_update = false,
+  run_on_start = true,
+  start_delay = 3000,
+  debounce_hours = 24,
+  integrations = {
+    ["mason-lspconfig"] = false,
+    ["mason-null-ls"] = false,
+    ["mason-nvim-dap"] = false,
+  },
 })
 
 local handlers = require("user.lsp.handlers")
 
-for _, server in pairs(M.servers) do
-	local opts = {
-		on_attach = handlers.on_attach,
-		capabilities = handlers.capabilities,
-	}
+vim.lsp.config("*", {
+  capabilities = handlers.capabilities,
+})
 
-	server = vim.split(server, "@")[1]
-
-	local require_ok, conf_opts = pcall(require, "user.lsp.settings." .. server)
-	if require_ok then
-		opts = vim.tbl_deep_extend("force", conf_opts, opts)
-	end
-
-	vim.lsp.config[server] = opts
-	vim.lsp.enable(server)
+for _, server in ipairs({ "eslint", "html", "jsonls", "lua_ls", "pyright" }) do
+  vim.lsp.config(server, require("user.lsp." .. server))
 end
+
+vim.lsp.enable(vim.tbl_keys(M.servers))
 
 return M

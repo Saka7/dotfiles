@@ -1,51 +1,58 @@
 local M = {}
 
-local cmp_nvim_lsp = require("cmp_nvim_lsp")
-
 M.capabilities = vim.lsp.protocol.make_client_capabilities()
-M.capabilities.textDocument.completion.completionItem.snippetSupport = true
-M.capabilities = cmp_nvim_lsp.default_capabilities(M.capabilities)
+M.capabilities = require("blink.cmp").get_lsp_capabilities(M.capabilities)
 
 M.setup = function()
-	local config = {
-		virtual_text = false,
-		signs = {
-			text = {
-				[vim.diagnostic.severity.ERROR] = "X",
-				[vim.diagnostic.severity.WARN] = "x",
-				[vim.diagnostic.severity.HINT] = "?",
-				[vim.diagnostic.severity.INFO] = "!",
-			},
-		},
-		update_in_insert = true,
-		underline = true,
-		severity_sort = true,
-		float = {
-			focusable = true,
-			style = "minimal",
-			border = "rounded",
-			source = "always",
-			header = "",
-			prefix = "",
-		},
-	}
+  local config = {
+    signs = {
+      text = {
+        [vim.diagnostic.severity.ERROR] = "X",
+        [vim.diagnostic.severity.WARN] = "x",
+        [vim.diagnostic.severity.HINT] = "?",
+        [vim.diagnostic.severity.INFO] = "!",
+      },
+    },
+    severity_sort = true,
+    float = {
+      focusable = true,
+      style = "minimal",
+      source = "always",
+      header = "",
+      prefix = "",
+    },
+    jump = {
+      on_jump = function(diagnostic, bufnr)
+        if diagnostic then
+          vim.diagnostic.open_float({ bufnr = bufnr, scope = "cursor", focus = false })
+        end
+      end,
+    },
+  }
 
-	vim.diagnostic.config(config)
+  vim.diagnostic.config(config)
 
-	local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
-	function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
-		opts = opts or {}
-		opts.border = opts.border or "rounded"
-		return orig_util_open_floating_preview(contents, syntax, opts, ...)
-	end
+  -- Keep shared mappings independent of server-specific on_attach callbacks.
+  vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("user_lsp_attach", { clear = true }),
+    callback = function(event)
+      local client = vim.lsp.get_client_by_id(event.data.client_id)
+      if client then
+        M.on_attach(client, event.buf)
+      end
+    end,
+  })
 end
 
 M.on_attach = function(client, bufnr)
-	if client.name == "ts_ls" then
-		client.server_capabilities.documentFormattingProvider = false
-	end
+  if client.name == "ts_ls" then
+    client.server_capabilities.documentFormattingProvider = false
+  end
+  if client.name == "ruff" then
+    client.server_capabilities.hoverProvider = false
+  end
 
-	require("user.whichkey").lsp_keymaps(bufnr)
+  require("user.keymaps").attach_lsp(bufnr)
 end
 
 return M

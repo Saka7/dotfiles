@@ -21,57 +21,94 @@ local function path_style(options)
   return style
 end
 
-local function context_path(name, options)
+local function buffer_path(bufnr, style)
+  if not vim.api.nvim_buf_is_valid(bufnr) or vim.bo[bufnr].buftype ~= "" then
+    return nil
+  end
+
+  local name = vim.api.nvim_buf_get_name(bufnr)
+  if name == "" then
+    return nil
+  end
+
   local absolute_path = vim.fs.normalize(vim.fn.fnamemodify(name, ":p"))
-  if path_style(options) == "absolute" then
+  if style == "absolute" then
     return absolute_path
   end
 
   return vim.fs.normalize(vim.fn.fnamemodify(absolute_path, ":."))
 end
 
-local function current_file(options)
-  local name = vim.api.nvim_buf_get_name(0)
-  if name == "" then
-    return nil
-  end
-
-  return context_path(name, options)
-end
-
 local function copy(text, description)
-  local ok, err = pcall(vim.fn.setreg, "+", text)
-  if not ok then
-    notify("Could not copy to clipboard: " .. tostring(err), vim.log.levels.ERROR)
-    return
+  local ok, result = pcall(vim.fn.setreg, "+", text)
+  if not ok or result ~= 0 then
+    notify("Could not copy to clipboard: " .. tostring(result), vim.log.levels.ERROR)
+    return false
   end
 
   notify(description .. " copied to clipboard", vim.log.levels.INFO)
+  return true
 end
 
-local function copy_buffer_paths(bufnrs, empty_message, options)
+local function collect_buffer_paths(bufnrs, style)
   local paths = {}
   local seen = {}
 
   for _, bufnr in ipairs(bufnrs) do
-    if vim.api.nvim_buf_is_valid(bufnr) then
-      local name = vim.api.nvim_buf_get_name(bufnr)
-      if name ~= "" and vim.bo[bufnr].buftype == "" then
-        local path = context_path(name, options)
-        if not seen[path] then
-          seen[path] = true
-          table.insert(paths, path)
-        end
-      end
+    local path = buffer_path(bufnr, style)
+    if path and not seen[path] then
+      seen[path] = true
+      table.insert(paths, path)
     end
   end
 
+  return paths
+end
+
+local function copy_buffer_paths(bufnrs, empty_message, style)
+  local paths = collect_buffer_paths(bufnrs, style)
   if #paths == 0 then
     notify(empty_message, vim.log.levels.WARN)
     return
   end
 
   copy(table.concat(paths, "\n"), "Buffer context")
+end
+
+local function selection_range()
+  local mode = vim.fn.mode()
+  local in_visual_mode = mode == "v" or mode == "V" or mode == "\22"
+  local first_line = vim.fn.line(in_visual_mode and "v" or "'<")
+  local last_line = vim.fn.line(in_visual_mode and "." or "'>")
+  if first_line == 0 or last_line == 0 then
+    return nil
+  end
+
+  return math.min(first_line, last_line), math.max(first_line, last_line)
+end
+
+local function accept_buffer_selection(prompt_bufnr, style)
+  local actions = require("telescope.actions")
+  local action_state = require("telescope.actions.state")
+  local picker = action_state.get_current_picker(prompt_bufnr)
+  local entries = picker:get_multi_selection()
+
+  if #entries == 0 then
+    local entry = action_state.get_selected_entry()
+    if entry then
+      entries = { entry }
+    end
+  end
+
+  local bufnrs = {}
+  for _, entry in ipairs(entries) do
+    if entry.bufnr then
+      table.insert(bufnrs, entry.bufnr)
+    end
+  end
+
+  actions.close(prompt_bufnr)
+  copy_buffer_paths(bufnrs, "No file buffers selected", style)
 end
 
 function M.setup(options)
@@ -84,36 +121,28 @@ function M.setup(options)
 end
 
 function M.copy_selection(options)
-  local file = current_file(options)
+  local file = buffer_path(vim.api.nvim_get_current_buf(), path_style(options))
   if not file then
-    notify("Current buffer has no file path", vim.log.levels.WARN)
+    notify("Current buffer is not a named file buffer", vim.log.levels.WARN)
     return
   end
 
-  local mode = vim.fn.mode()
-  local in_visual_mode = mode == "v" or mode == "V" or mode == "\22"
-  local first_line = vim.fn.line(in_visual_mode and "v" or "'<")
-  local last_line = vim.fn.line(in_visual_mode and "." or "'>")
-  if first_line == 0 or last_line == 0 then
+  local first_line, last_line = selection_range()
+  if not first_line then
     notify("No visual selection found", vim.log.levels.WARN)
     return
   end
 
-  if first_line > last_line then
-    first_line, last_line = last_line, first_line
-  end
-
-  local line_reference = first_line == last_line
-      and tostring(first_line)
-      or string.format("%d-%d", first_line, last_line)
+  local line_reference = first_line == last_line and tostring(first_line)
+    or string.format("%d-%d", first_line, last_line)
 
   copy(string.format("%s:%s", file, line_reference), "Selection context")
 end
 
 function M.copy_file(options)
-  local file = current_file(options)
+  local file = buffer_path(vim.api.nvim_get_current_buf(), path_style(options))
   if not file then
-    notify("Current buffer has no file path", vim.log.levels.WARN)
+    notify("Current buffer is not a named file buffer", vim.log.levels.WARN)
     return
   end
 
@@ -121,58 +150,31 @@ function M.copy_file(options)
 end
 
 function M.copy_buffers(options)
+  local style = path_style(options)
   local bufnrs = {}
 
   for _, buffer in ipairs(vim.fn.getbufinfo({ buflisted = 1 })) do
     table.insert(bufnrs, buffer.bufnr)
   end
 
-  copy_buffer_paths(bufnrs, "No open file buffers found", options)
+  copy_buffer_paths(bufnrs, "No open file buffers found", style)
 end
 
 function M.select_buffers(options)
+  local style = path_style(options)
   local telescope_ok, telescope = pcall(require, "telescope.builtin")
-  if not telescope_ok then
-    local lazy_ok, lazy = pcall(require, "lazy")
-    if lazy_ok then
-      lazy.load({ plugins = { "telescope.nvim" } })
-      telescope_ok, telescope = pcall(require, "telescope.builtin")
-    end
-  end
-
   if not telescope_ok then
     notify("Telescope is unavailable", vim.log.levels.ERROR)
     return
   end
 
   local actions = require("telescope.actions")
-  local action_state = require("telescope.actions.state")
 
   telescope.buffers({
-    prompt_title = "Select Buffers to Copy",
     show_all_buffers = true,
     attach_mappings = function(prompt_bufnr)
       actions.select_default:replace(function()
-        local picker = action_state.get_current_picker(prompt_bufnr)
-        local entries = picker:get_multi_selection()
-
-        if #entries == 0 then
-          local entry = action_state.get_selected_entry()
-          if entry then
-            entries = { entry }
-          end
-        end
-
-        actions.close(prompt_bufnr)
-
-        local bufnrs = {}
-        for _, entry in ipairs(entries) do
-          if entry.bufnr then
-            table.insert(bufnrs, entry.bufnr)
-          end
-        end
-
-        copy_buffer_paths(bufnrs, "No file buffers selected", options)
+        accept_buffer_selection(prompt_bufnr, style)
       end)
 
       return true

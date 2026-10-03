@@ -14,15 +14,15 @@ vim.api.nvim_create_autocmd("FileType", {
   group = augroup("_general_settings"),
   pattern = { "qf", "help", "man", "lspinfo" },
   callback = function(ev)
-    vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = ev.buf, silent = true })
+    require("user.keymaps").attach_special_buffer(ev.buf)
   end,
 })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = augroup("_highlight_yank"),
   callback = function()
-    local on_yank = vim.hl and vim.hl.on_yank or vim.highlight.on_yank
-    on_yank({ higroup = "Visual", timeout = 200 })
+    local highlight_operation = vim.hl.hl_op or vim.hl.on_yank
+    highlight_operation({ higroup = "Visual", timeout = 200 })
   end,
 })
 
@@ -52,26 +52,15 @@ vim.api.nvim_create_autocmd("FileType", {
 
 vim.api.nvim_create_autocmd("VimResized", {
   group = augroup("_auto_resize"),
-  command = "tabdo wincmd =",
-})
-
-vim.api.nvim_create_autocmd("User", {
-  group = augroup("_alpha"),
-  pattern = "AlphaReady",
-  callback = function(ev)
-    vim.opt.showtabline = 0
-    vim.api.nvim_create_autocmd("BufUnload", {
-      buffer = ev.buf,
-      once = true,
-      callback = function()
-        vim.opt.showtabline = 2
-      end,
-    })
+  callback = function()
+    local current_tab = vim.api.nvim_get_current_tabpage()
+    vim.cmd("tabdo wincmd =")
+    vim.api.nvim_set_current_tabpage(current_tab)
   end,
 })
 
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("_csvview"),
   pattern = "csv",
-  command = "silent! CsvViewEnable",
+  command = "CsvViewEnable",
 })

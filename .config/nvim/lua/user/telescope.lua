@@ -1,16 +1,20 @@
 local telescope = require("telescope")
-local actions = require "telescope.actions"
 
-telescope.setup {
+local default_config = {
+  prompt_title = false,
+  results_title = false,
+  preview_title = false,
+  fix_preview_title = true,
+  layout_config = { preview_width = 0.7 },
+}
+
+local config = {
   defaults = {
-    prompt_prefix = " ",
-    selection_caret = " ",
-    layout_strategy = 'vertical',
+    layout_strategy = "bottom_pane",
     layout_config = {
-      width = 0.95,
-      height = 0.95,
+      width = 0.8,
+      height = 0.99,
       prompt_position = "bottom",
-      mirror = false,
     },
     vimgrep_arguments = {
       "rg",
@@ -23,106 +27,45 @@ telescope.setup {
       "--hidden",
       "--glob=!.git/",
     },
-    mappings = {
-      i = {
-        ["<C-n>"] = actions.cycle_history_next,
-        ["<C-p>"] = actions.cycle_history_prev,
-
-        ["<C-j>"] = actions.move_selection_next,
-        ["<C-k>"] = actions.move_selection_previous,
-
-        ["<C-c>"] = actions.close,
-
-        ["<Down>"] = actions.move_selection_next,
-        ["<Up>"] = actions.move_selection_previous,
-
-        ["<CR>"] = actions.select_default,
-        ["<C-x>"] = actions.select_horizontal,
-        ["<C-v>"] = actions.select_vertical,
-        ["<C-t>"] = actions.select_tab,
-
-        ["<C-u>"] = actions.preview_scrolling_up,
-        ["<C-d>"] = actions.preview_scrolling_down,
-
-        ["<PageUp>"] = actions.results_scrolling_up,
-        ["<PageDown>"] = actions.results_scrolling_down,
-
-        ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-        ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-        ["<C-A-q>"] = actions.send_to_qflist + actions.open_qflist,
-        ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
-        ["<C-l>"] = actions.complete_tag,
-      },
-
-      n = {
-        ["<esc>"] = actions.close,
-        ["<CR>"] = actions.select_default,
-        ["<C-x>"] = actions.select_horizontal,
-        ["<C-v>"] = actions.select_vertical,
-        ["<C-t>"] = actions.select_tab,
-
-        ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-        ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-        ["<C-A-q>"] = actions.send_to_qflist + actions.open_qflist,
-        ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
-
-        ["j"] = actions.move_selection_next,
-        ["k"] = actions.move_selection_previous,
-        ["H"] = actions.move_to_top,
-        ["M"] = actions.move_to_middle,
-        ["L"] = actions.move_to_bottom,
-
-        ["<Down>"] = actions.move_selection_next,
-        ["<Up>"] = actions.move_selection_previous,
-        ["gg"] = actions.move_to_top,
-        ["G"] = actions.move_to_bottom,
-
-        ["<C-u>"] = actions.preview_scrolling_up,
-        ["<C-d>"] = actions.preview_scrolling_down,
-
-        ["<PageUp>"] = actions.results_scrolling_up,
-        ["<PageDown>"] = actions.results_scrolling_down,
-
-        ["?"] = actions.which_key,
-      },
-    },
+    mappings = require("user.keymaps").telescope(),
   },
   pickers = {
-    find_files = {
+    find_files = vim.tbl_extend("force", default_config, {
       hidden = true,
-    },
-    live_grep = {
+      borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
+    }),
+    live_grep = vim.tbl_extend("force", default_config, {
       only_sort_text = true,
-    },
-    grep_string = {
+      path_display = { "tail" },
+      show_line = false,
+      disable_devicons = true,
+    }),
+    grep_string = vim.tbl_extend("force", default_config, {
       only_sort_text = true,
-    },
-    buffers = {
+      path_display = { "tail" },
+      show_line = false,
+      disable_devicons = true,
+    }),
+    buffers = vim.tbl_extend("force", default_config, {
       initial_mode = "normal",
-    },
-    git_files = {
-      hidden = true,
+    }),
+    git_files = vim.tbl_extend("force", default_config, {
       show_untracked = true,
-    },
+    }),
+    git_status = vim.tbl_extend("force", default_config, {}),
   },
   extensions = {
-    hierarchy = {
+    hierarchy = vim.tbl_extend("force", default_config, {
       initial_multi_expand = true,
-      multi_depth = 5,
+      multi_depth = 8,
       layout_strategy = "vertical",
-    },
-    live_grep_args = {
-      auto_quoting = true,
-    },
-    fzf = {
-      fuzzy = true,
-      override_generic_sorter = true,
-      override_file_sorter = true,
-      case_mode = "smart_case",
-    },
+    }),
+    live_grep_args = vim.tbl_extend("force", default_config, {}),
   },
 }
 
-pcall(telescope.load_extension, "fzf")
-pcall(telescope.load_extension, "hierarchy")
-pcall(telescope.load_extension, "live_grep_args")
+telescope.setup(config)
+
+telescope.load_extension("fzf")
+telescope.load_extension("hierarchy")
+telescope.load_extension("live_grep_args")
